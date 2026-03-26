@@ -5,7 +5,7 @@
 *.so
 *.dylib
 *.out
-onlycli
+/onlycli
 
 # Build output
 /bin/
