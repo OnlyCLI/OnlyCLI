@@ -265,7 +265,7 @@ func TestParseEmptySpec(t *testing.T) {
 openapi: "3.0.0"
 info:
   title: Empty
-  version: "0.0.1"
+  version: "0.1.0"
 paths: {}
 `)
 	spec, err := Parse(specBytes, "empty", "", "", "github.com/example/empty")

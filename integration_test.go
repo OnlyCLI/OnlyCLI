@@ -332,7 +332,7 @@ func TestIntegration_EmptySpec(t *testing.T) {
 openapi: "3.0.0"
 info:
   title: Empty API
-  version: "0.0.1"
+  version: "0.1.0"
 paths: {}
 `)
 	tmpSpec := filepath.Join(t.TempDir(), "empty.yaml")

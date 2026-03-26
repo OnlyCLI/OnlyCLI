@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-03-26
+
 ### Added
 - Core CLI tool: `onlycli generate` command to generate Go CLI projects from OpenAPI specs
 - OpenAPI 3.0/3.1 parsing via libopenapi
