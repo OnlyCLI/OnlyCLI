@@ -1171,6 +1171,90 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
   color: var(--text);
 }
 
+/* --- Stats row --- */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-number {
+  font-family: var(--font-mono);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  color: var(--green);
+  line-height: 1;
+  text-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--dim);
+  line-height: 1.4;
+}
+
+@media (max-width: 639px) {
+  .stats-row {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+/* --- Steps grid --- */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.step-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.step-card h3 {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  background: var(--green);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 50%;
+  margin-bottom: 0.75rem;
+}
+
+.step-card .code-block {
+  font-size: 0.78rem;
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* --- Animations --- */
 @keyframes cursor-blink {
   0%, 100% { opacity: 1; }

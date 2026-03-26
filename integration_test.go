@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -43,6 +44,9 @@ func goBuild(t *testing.T, dir, binaryName string) string {
 	tidyOut, err := tidyCmd.CombinedOutput()
 	require.NoError(t, err, "go mod tidy failed: %s", string(tidyOut))
 
+	if runtime.GOOS == "windows" {
+		binaryName += ".exe"
+	}
 	binPath := filepath.Join(dir, binaryName)
 	buildCmd := exec.Command("go", "build", "-o", binPath, ".")
 	buildCmd.Dir = dir

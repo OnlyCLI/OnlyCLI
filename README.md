@@ -3,147 +3,124 @@
 [![CI](https://github.com/onlycli/onlycli/actions/workflows/ci.yml/badge.svg)](https://github.com/onlycli/onlycli/actions/workflows/ci.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/onlycli/onlycli)](https://goreportcard.com/report/github.com/onlycli/onlycli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Go Reference](https://pkg.go.dev/badge/github.com/onlycli/onlycli.svg)](https://pkg.go.dev/github.com/onlycli/onlycli)
 
-Turn any OpenAPI spec into a native CLI binary. No MCP, no bloat, no runtime dependencies.
+**Turn any OpenAPI spec into a complete CLI. One command. One binary.**
 
-MCP injects all tool schemas into every LLM conversation, burning 4-32x more tokens and suffering 28% connection failures ([source](https://scalekit.com)). OnlyCLI takes a different approach: generate a static, distributable CLI binary with stable `--help` and completion that LLM agents can learn from; you can optionally maintain a `SKILL.md` for agent-oriented discovery.
+```
+$ onlycli generate \
+    --spec api.github.com.yaml \
+    --name github --auth bearer --out ./github-cli
+
+Generated CLI project at ./github-cli
+  Groups: 43
+  Commands: 1107
+  Auth: bearer (env: GITHUB_TOKEN)
+
+$ cd github-cli && go build -o gh .
+
+$ ./gh repos get --owner microsoft --repo vscode --format yaml
+$ ./gh issues list-for-repo --owner golang --repo go --state open --format table
+$ ./gh search repos --q "language:go stars:>1000" --sort stars --transform "#.full_name"
+```
+
+Every endpoint in the GitHub REST API (1,107 operations) becomes a typed CLI command with flags, help text, and shell completion.
+
+## Install
+
+```bash
+go install github.com/onlycli/onlycli/cmd/onlycli@latest
+```
+
+Or download a pre-built binary from [Releases](https://github.com/onlycli/onlycli/releases).
 
 ## Quick Start
 
-### Install
-
 ```bash
-# Go install
-go install github.com/onlycli/onlycli/cmd/onlycli@latest
-
-# Or use the install script
-curl -sSfL https://raw.githubusercontent.com/onlycli/onlycli/main/install.sh | sh
-
-# Or with Docker
-docker run --rm -v $(pwd):/work ghcr.io/onlycli/onlycli generate --spec /work/api.yaml --name myapi --out /work/myapi-cli
-```
-
-### Generate a CLI
-
-```bash
+# 1. Generate -- point at any OpenAPI 3.x spec (local file or URL)
 onlycli generate \
-  --spec https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.yaml \
-  --name github \
-  --auth bearer \
-  --out ./github-cli
+  --spec https://raw.githubusercontent.com/swagger-api/swagger-petstore/master/src/main/resources/openapi.yaml \
+  --name petstore --out ./petstore-cli
 
-cd github-cli && go mod tidy && go build -o github .
+# 2. Build
+cd petstore-cli && go mod tidy && go build -o petstore .
+
+# 3. Use
+./petstore pet find-pets-by-status --status available --format table
+./petstore --help
 ```
 
-### Use the Generated CLI
+That's it. Every operation in the spec is now a CLI command.
 
-```bash
-export GITHUB_TOKEN=ghp_xxxxx
+## What You Get
 
-./github repos get --owner microsoft --repo vscode
-./github issues list-for-repo --owner microsoft --repo vscode --state open --per-page 5
-./github pulls create --owner user --repo myrepo --data '{"title":"fix","head":"feat","base":"main"}'
-./github search repos --q "language:go stars:>1000" --sort stars
-```
+Every generated CLI ships with:
 
-All output is plain JSON. Pipe to `jq` for filtering:
-
-```bash
-./github repos list-for-user --username octocat | jq '.[].full_name'
-```
-
-## How It Works
-
-```
-OpenAPI Spec (YAML/JSON)
-     |
-     v
- [libopenapi]  -- Parse into typed model
-     |
-     v
- [IR Model]    -- APISpec, CommandGroups, Commands, Parameters
-     |
-     +---> [codegen]   -- Go templates --> .go source files
-               |
-               +--> main.go
-               +--> commands/ (root, groups, operations, register)
-               +--> runtime/ (HTTP client, output formatting)
-               +--> go.mod
-```
-
-Each OpenAPI operation becomes a Cobra CLI command, grouped by tag. The mapping:
-
-| OpenAPI Element | CLI Mapping |
+| Capability | How |
 |---|---|
-| `tags` | Subcommand groups (`github repos`, `github issues`) |
-| `operationId` | Command name, kebab-cased with group prefix stripped |
-| Path parameters | Required `--flags` |
-| Query parameters | Optional `--flags` |
-| `requestBody` | `--data` flag (supports stdin via `--data -`) |
-| `description` | `--help` text |
-| `responses` | Plain JSON output |
-
-## Flags
-
-| Flag | Required | Description |
-|---|---|---|
-| `--spec` | Yes | Path or URL to OpenAPI spec (YAML/JSON) |
-| `--name` | Yes | Name of the generated CLI binary |
-| `--out` | Yes | Output directory for the generated project |
-| `--auth` | No | Auth type: `bearer`, `basic`, `apikey` (auto-detected from spec) |
-| `--module` | No | Go module path (default: `github.com/<name>/<name>-cli`) |
-
-## Generated CLI Features
-
-- Subcommand tree grouped by OpenAPI tags
-- All parameters as self-documenting `--flags`
-- Plain JSON output by default, `--pretty` for formatted
-- Authentication via environment variable
-- Shell completion (`<cli> completion bash/zsh/fish/powershell`)
-- Cross-platform (Linux, macOS, Windows; amd64, arm64)
-- LLM-friendly CLI surface: predictable `--help`, flags, and shell completion (optional hand-maintained `SKILL.md` for agent docs)
+| Every endpoint as a command | Grouped by tag, named by operationId |
+| All parameters as `--flags` | Path, query, header, and request body fields |
+| 7 output formats | `--format json\|yaml\|table\|csv\|pretty\|jsonl\|raw` |
+| Field projection | `--transform "#.name"` via [GJSON](https://github.com/tidwall/gjson) |
+| Go template output | `--template '{{.login}}'` |
+| Auto-pagination | `--page-limit N` follows `Link` headers |
+| File input | `--data @payload.json` or `--data @-` for stdin |
+| OAuth2 authentication | Device flow (interactive) + client credentials (CI) |
+| Multi-profile config | `config set staging.token xxx && --profile staging` |
+| Retry with backoff | `--max-retries 3` for transient 429/5xx errors |
+| Dry-run mode | `--dry-run` prints the request without sending |
+| HTTP/2 + gzip | Modern transport, automatic content decompression |
+| Shell completion | `completion bash\|zsh\|fish\|powershell` with enum hints |
+| Cross-platform | Linux, macOS, Windows; amd64, arm64 |
 
 ## Examples
 
-See the [examples/](examples/) directory for pre-generated CLI projects:
+Pre-generated CLIs from live public specs:
 
-- **[petstore](examples/petstore/)** - Classic Petstore API (2 groups, 6 commands)
-- **[github](examples/github/)** - GitHub REST API subset (7 groups, 20 commands)
+| Example | Source Spec | Groups | Commands |
+|---|---|---|---|
+| [petstore](examples/petstore/) | [Swagger Petstore](https://petstore3.swagger.io/) | 3 | 19 |
+| [github](examples/github/) | [GitHub REST API](https://docs.github.com/rest) | 43 | 1,107 |
 
-## CI Integration
+Regenerate them yourself:
 
-Rebuild the CLI when your API spec changes:
-
-```yaml
-# .github/workflows/build-cli.yml
-on:
-  push:
-    paths: ['openapi.yaml']
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with: { go-version: '1.23' }
-      - run: go install github.com/onlycli/onlycli/cmd/onlycli@latest
-      - run: onlycli generate --spec openapi.yaml --name myapi --out ./cli
-      - run: cd cli && go mod tidy && go build -o myapi .
+```bash
+make generate-example
 ```
+
+## Comparison
+
+| | OnlyCLI | curl | Restish | MCP tools |
+|---|---|---|---|---|
+| Typed commands per endpoint | **Yes** | No | Yes | Varies |
+| Single distributable binary | **Yes** | Yes | Yes | No |
+| Output formatting (table/yaml/csv) | **Yes** | No | No | No |
+| Built-in pagination | **Yes** | No | No | No |
+| Works offline, no server process | **Yes** | Yes | Yes | No |
+| Token cost for AI agents | **Low** | Low | Low | High |
+
+Detailed write-ups: [vs Stainless](https://onlycli.github.io/onlycli/compare/vs-stainless/) &middot; [vs Restish](https://onlycli.github.io/onlycli/compare/vs-restish/) &middot; [vs curl/HTTPie](https://onlycli.github.io/onlycli/blog/onlycli-vs-curl-httpie/)
+
+## For AI Agents
+
+LLM agents call APIs. Most frameworks push full OpenAPI schemas into every prompt, burning tokens and adding latency. OnlyCLI takes the opposite approach:
+
+1. Generate a binary once from the spec
+2. Agent calls `./cli --help` to discover commands
+3. Agent runs `./cli repos get --owner x --repo y` and reads stdout
+
+Stable command names, predictable flags, structured JSON output. No MCP server, no schema injection, no connection management.
 
 ## Development
 
 ```bash
-git clone https://github.com/onlycli/onlycli.git
-cd onlycli
-make test          # Run all tests
-make lint          # Run linter
-make check         # Full pre-commit check (fmt + vet + lint + test)
-make build         # Build binary to bin/onlycli
+git clone https://github.com/onlycli/onlycli.git && cd onlycli
+make test          # unit + integration tests
+make lint          # golangci-lint
+make check         # fmt + vet + lint + test
+make build         # build to bin/onlycli
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contributing guide and [ARCHITECTURE.md](ARCHITECTURE.md) for codebase structure.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide and [ARCHITECTURE.md](ARCHITECTURE.md) for codebase structure.
 
 ## License
 
