@@ -376,6 +376,6 @@ Yes. Generated Go code targets **Linux, macOS, and Windows** (amd64/arm64). Use 
 ## Related links
 
 - [OnlyCLI on GitHub](https://github.com/onlycli/onlycli)
-- [Getting started (blog)]({% post_url 2026-03-25-getting-started-with-onlycli %})
+- [Getting started (blog)]({{ '/blog/getting-started-with-onlycli/' | relative_url }})
 - [OnlyCLI vs Stainless]({{ '/compare/vs-stainless/' | relative_url }})
 - [OnlyCLI vs Restish]({{ '/compare/vs-restish/' | relative_url }})

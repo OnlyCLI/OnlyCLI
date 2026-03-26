@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="390" viewBox="0 0 720 390">
+  <rect fill="#161b22" width="720" height="390" rx="10" ry="10"/>
+  <rect fill="#21262d" width="720" height="36" rx="10" ry="10"/>
+  <rect fill="#21262d" y="26" width="720" height="10"/>
+  <circle fill="#ff5f57" cx="20" cy="18" r="6"/>
+  <circle fill="#febc2e" cx="40" cy="18" r="6"/>
+  <circle fill="#28c840" cx="60" cy="18" r="6"/>
+  <text x="360" y="22" text-anchor="middle" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="12" fill="#8b949e">onlycli -- Terminal</text>
+
+  <text y="66" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13">
+    <tspan x="16" fill="#8b949e">$ </tspan><tspan fill="#e6edf3">onlycli generate </tspan><tspan fill="#79c0ff">--spec </tspan><tspan fill="#a5d6ff">api.github.com.yaml </tspan><tspan fill="#e6edf3">\</tspan>
+  </text>
+  <text y="84" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13">
+    <tspan x="36" fill="#79c0ff">--name </tspan><tspan fill="#a5d6ff">github </tspan><tspan fill="#79c0ff">--auth </tspan><tspan fill="#a5d6ff">bearer </tspan><tspan fill="#79c0ff">--out </tspan><tspan fill="#a5d6ff">./github-cli</tspan>
+  </text>
+
+  <text y="112" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13">
+    <tspan x="16" fill="#8b949e">Generated CLI project at ./github-cli</tspan>
+  </text>
+  <text y="130" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13">
+    <tspan x="16" fill="#8b949e">  Groups: </tspan><tspan fill="#d2a8ff">43</tspan><tspan fill="#8b949e">   Commands: </tspan><tspan fill="#3fb950">1,107</tspan><tspan fill="#8b949e">   Auth: bearer</tspan>
+  </text>
+
+  <text y="162" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13">
+    <tspan x="16" fill="#8b949e">$ </tspan><tspan fill="#e6edf3">cd github-cli &amp;&amp; go build -o gh .</tspan>
+  </text>
+
+  <text y="194" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13">
+    <tspan x="16" fill="#8b949e">$ </tspan><tspan fill="#e6edf3">./gh repos get </tspan><tspan fill="#79c0ff">--owner </tspan><tspan fill="#a5d6ff">golang </tspan><tspan fill="#79c0ff">--repo </tspan><tspan fill="#a5d6ff">go </tspan><tspan fill="#79c0ff">--format </tspan><tspan fill="#a5d6ff">yaml</tspan>
+  </text>
+  <text y="212" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13" fill="#8b949e"><tspan x="16">name: go</tspan></text>
+  <text y="230" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13" fill="#8b949e"><tspan x="16">full_name: golang/go</tspan></text>
+  <text y="248" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13"><tspan x="16" fill="#8b949e">stargazers_count: </tspan><tspan fill="#d2a8ff">128000</tspan></text>
+  <text y="266" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13" fill="#8b949e"><tspan x="16">language: Go</tspan></text>
+
+  <text y="298" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13">
+    <tspan x="16" fill="#8b949e">$ </tspan><tspan fill="#e6edf3">./gh search repos </tspan><tspan fill="#79c0ff">--q </tspan><tspan fill="#a5d6ff">"language:go" </tspan><tspan fill="#79c0ff">--sort </tspan><tspan fill="#a5d6ff">stars </tspan><tspan fill="#79c0ff">--transform </tspan><tspan fill="#a5d6ff">"#.full_name"</tspan>
+  </text>
+  <text y="316" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13" fill="#3fb950"><tspan x="16">["golang/go","kubernetes/kubernetes","fatedier/frp","syncthing/syncthing",...</tspan></text>
+
+  <text y="348" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13">
+    <tspan x="16" fill="#8b949e">$ </tspan><tspan fill="#e6edf3">./gh issues list-for-repo </tspan><tspan fill="#79c0ff">--owner </tspan><tspan fill="#a5d6ff">golang </tspan><tspan fill="#79c0ff">--repo </tspan><tspan fill="#a5d6ff">go </tspan><tspan fill="#79c0ff">--format </tspan><tspan fill="#a5d6ff">table</tspan>
+  </text>
+  <text y="366" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13" fill="#8b949e"><tspan x="16">ID      TITLE                           STATE   CREATED</tspan></text>
+  <text y="384" font-family="JetBrains Mono,Menlo,Monaco,Courier New,monospace" font-size="13" fill="#8b949e"><tspan x="16">71234   proposal: spec: add ...          open    2025-12-01</tspan></text>
+</svg>

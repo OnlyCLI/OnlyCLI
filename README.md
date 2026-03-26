@@ -6,22 +6,9 @@
 
 **Turn any OpenAPI spec into a complete CLI. One command. One binary.**
 
-```
-$ onlycli generate \
-    --spec api.github.com.yaml \
-    --name github --auth bearer --out ./github-cli
-
-Generated CLI project at ./github-cli
-  Groups: 43
-  Commands: 1107
-  Auth: bearer (env: GITHUB_TOKEN)
-
-$ cd github-cli && go build -o gh .
-
-$ ./gh repos get --owner microsoft --repo vscode --format yaml
-$ ./gh issues list-for-repo --owner golang --repo go --state open --format table
-$ ./gh search repos --q "language:go stars:>1000" --sort stars --transform "#.full_name"
-```
+<p align="center">
+  <img src="docs/assets/images/hero-terminal.svg" alt="OnlyCLI terminal demo: generate a CLI from the GitHub API spec, then query repos, search, and list issues" width="720">
+</p>
 
 Every endpoint in the GitHub REST API (1,107 operations) becomes a typed CLI command with flags, help text, and shell completion.
 
@@ -98,7 +85,7 @@ make generate-example
 | Works offline, no server process | **Yes** | Yes | Yes | No |
 | Token cost for AI agents | **Low** | Low | Low | High |
 
-Detailed write-ups: [vs Stainless](https://onlycli.github.io/onlycli/compare/vs-stainless/) &middot; [vs Restish](https://onlycli.github.io/onlycli/compare/vs-restish/) &middot; [vs curl/HTTPie](https://onlycli.github.io/onlycli/blog/onlycli-vs-curl-httpie/)
+Detailed write-ups: [vs Stainless](https://onlycli.github.io/OnlyCLI/compare/vs-stainless/) &middot; [vs Restish](https://onlycli.github.io/OnlyCLI/compare/vs-restish/) &middot; [vs curl/HTTPie](https://onlycli.github.io/OnlyCLI/blog/onlycli-vs-curl-httpie/)
 
 ## For AI Agents
 
