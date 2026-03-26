@@ -68,21 +68,30 @@ description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 1,107 GitHub
     <div class="step-card">
       <div class="step-number">1</div>
       <h3>Install</h3>
-      <pre class="code-block"><span class="p">$</span> go install github.com/onlycli/onlycli/cmd/onlycli@latest</pre>
+      <div class="code-block-wrap">
+        <pre class="code-block"><span class="p">$</span> go install github.com/onlycli/onlycli/cmd/onlycli@latest</pre>
+        <button type="button" class="btn-copy-icon" data-copy="go install github.com/onlycli/onlycli/cmd/onlycli@latest" aria-label="Copy command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+      </div>
     </div>
     <div class="step-card">
       <div class="step-number">2</div>
       <h3>Generate</h3>
-      <pre class="code-block"><span class="p">$</span> onlycli generate \
+      <div class="code-block-wrap">
+        <pre class="code-block"><span class="p">$</span> onlycli generate \
     --spec your-api.yaml \
     --name myapi --out ./cli</pre>
+        <button type="button" class="btn-copy-icon" data-copy="onlycli generate --spec your-api.yaml --name myapi --out ./cli" aria-label="Copy command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+      </div>
     </div>
     <div class="step-card">
       <div class="step-number">3</div>
       <h3>Build &amp; use</h3>
-      <pre class="code-block"><span class="p">$</span> cd cli && go build -o myapi .
+      <div class="code-block-wrap">
+        <pre class="code-block"><span class="p">$</span> cd cli && go build -o myapi .
 <span class="p">$</span> ./myapi --help
 <span class="p">$</span> ./myapi users list --format table</pre>
+        <button type="button" class="btn-copy-icon" data-copy="cd cli && go build -o myapi .&#10;./myapi --help&#10;./myapi users list --format table" aria-label="Copy command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+      </div>
     </div>
   </div>
   <p class="section-lead" style="margin-top: 2rem;">Every operation in your spec becomes a command. Every parameter becomes a flag. That's it.</p>
@@ -93,15 +102,27 @@ description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 1,107 GitHub
   <div class="features-grid features-grid--three">
     <article class="benefit-card">
       <h3>Complete coverage, zero effort</h3>
-      <p>Every endpoint in your OpenAPI spec becomes a CLI command. Path parameters, query strings, request bodies -- all mapped to typed <code>--flags</code> automatically.</p>
+      <ul class="benefit-list">
+        <li>Every endpoint becomes a CLI command</li>
+        <li>Params, query strings, bodies mapped to typed <code>--flags</code></li>
+        <li>Help text auto-generated from spec descriptions</li>
+      </ul>
     </article>
     <article class="benefit-card">
       <h3>One binary, ship anywhere</h3>
-      <p>Compiled Go binary. No interpreter, no VM, no node_modules. Copy it to a server, a container, or a colleague's laptop. It just runs.</p>
+      <ul class="benefit-list">
+        <li>Compiled Go binary, zero runtime deps</li>
+        <li>No interpreter, VM, or node_modules</li>
+        <li>Copy to a server, container, or laptop</li>
+      </ul>
     </article>
     <article class="benefit-card">
       <h3>AI agents use it natively</h3>
-      <p>LLM agents call <code>--help</code> to discover commands, execute them, read stdout. No MCP server, no schema injection, no token waste.</p>
+      <ul class="benefit-list">
+        <li>Agents call <code>--help</code> to discover commands</li>
+        <li>Execute and read structured stdout directly</li>
+        <li>No MCP server, no schema injection, no token waste</li>
+      </ul>
     </article>
   </div>
 </section>
@@ -113,62 +134,62 @@ description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 1,107 GitHub
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">fmt</div>
       <h3>7 output formats</h3>
-      <p><code>--format json|yaml|table|csv|pretty|jsonl|raw</code>. Pick the shape that fits the next pipe -- human-readable tables, machine JSON, or diff-friendly YAML.</p>
+      <p><code>--format json|yaml|table|csv|pretty|jsonl|raw</code> -- tables, JSON, or diff-friendly YAML.</p>
     </article>
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">#.name</div>
       <h3>GJSON transforms</h3>
-      <p><code>--transform "#.full_name"</code> projects fields inline. Skip spinning up <code>jq</code> when a single flag answers the question.</p>
+      <p><code>--transform "#.full_name"</code> -- project fields inline without reaching for <code>jq</code>.</p>
     </article>
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">pg</div>
       <h3>Auto-pagination</h3>
-      <p><code>--page-limit 10</code> follows <code>Link: rel="next"</code> headers automatically. One invocation, complete result sets.</p>
+      <p><code>--page-limit 10</code> -- follows <code>Link: rel="next"</code> headers. One call, complete results.</p>
     </article>
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">@</div>
       <h3>File &amp; stdin input</h3>
-      <p><code>--data @payload.json</code> or <code>--data @-</code> for piped input. Keep shell commands readable and CI jobs repeatable.</p>
+      <p><code>--data @payload.json</code> or <code>--data @-</code> for stdin. Readable commands, repeatable CI.</p>
     </article>
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">OAuth2</div>
       <h3>OAuth2 built in</h3>
-      <p>Device flow for interactive login. Client credentials for CI. Tokens saved per profile, not per env var.</p>
+      <p>Device flow for login, client credentials for CI. Tokens saved per profile.</p>
     </article>
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">prof</div>
       <h3>Multi-profile config</h3>
-      <p><code>config set staging.token xxx</code> then <code>--profile staging</code>. Separate dev, staging, and production without re-exporting secrets.</p>
+      <p><code>--profile staging</code> -- switch dev, staging, and prod without re-exporting secrets.</p>
     </article>
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">retry</div>
       <h3>Retry with backoff</h3>
-      <p><code>--max-retries 3</code> handles transient 429s and 5xx with exponential backoff. Respects <code>Retry-After</code> headers.</p>
+      <p><code>--max-retries 3</code> -- exponential backoff for 429s and 5xx. Respects <code>Retry-After</code>.</p>
     </article>
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">dry</div>
       <h3>Dry-run mode</h3>
-      <p><code>--dry-run</code> prints method, URL, headers, and body without sending. Debug safely, document accurately.</p>
+      <p><code>--dry-run</code> -- prints method, URL, headers, body without sending.</p>
     </article>
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">TAB</div>
       <h3>Smart shell completion</h3>
-      <p>Bash, zsh, fish, PowerShell. OpenAPI enums surface as completion candidates -- your shell suggests valid values.</p>
+      <p>Bash, zsh, fish, PowerShell. Enums surface as completion candidates.</p>
     </article>
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">{% raw %}{{ }}{% endraw %}</div>
       <h3>Go template output</h3>
-      <p><code>--template '{% raw %}{{.login}}{% endraw %}'</code> when you need custom formatting beyond field projection.</p>
+      <p><code>--template '{% raw %}{{.login}}{% endraw %}'</code> -- custom formatting beyond field projection.</p>
     </article>
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">a.b</div>
       <h3>Nested body flags</h3>
-      <p><code>--name.first John</code> builds nested JSON. Structured request bodies without heredocs.</p>
+      <p><code>--name.first John</code> -- builds nested JSON, no heredocs needed.</p>
     </article>
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">H2</div>
       <h3>HTTP/2 + compression</h3>
-      <p>Modern transport defaults. Multiplexed requests, automatic gzip decompression.</p>
+      <p>Multiplexed requests, auto gzip decompression out of the box.</p>
     </article>
   </div>
 </section>
@@ -301,18 +322,34 @@ description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 1,107 GitHub
 
 <script>
   (function () {
-    var btn = document.getElementById("install-copy-btn");
-    if (!btn || !navigator.clipboard || !navigator.clipboard.writeText) return;
-    btn.addEventListener("click", function () {
-      var text = btn.getAttribute("data-copy") || "";
-      navigator.clipboard.writeText(text).then(function () {
-        btn.classList.add("is-done");
-        var prev = btn.textContent;
-        btn.textContent = "Copied";
-        setTimeout(function () {
-          btn.classList.remove("is-done");
-          btn.textContent = prev;
-        }, 2000);
+    if (!navigator.clipboard || !navigator.clipboard.writeText) return;
+
+    var installBtn = document.getElementById("install-copy-btn");
+    if (installBtn) {
+      installBtn.addEventListener("click", function () {
+        var text = installBtn.getAttribute("data-copy") || "";
+        navigator.clipboard.writeText(text).then(function () {
+          installBtn.classList.add("is-done");
+          var prev = installBtn.textContent;
+          installBtn.textContent = "Copied";
+          setTimeout(function () {
+            installBtn.classList.remove("is-done");
+            installBtn.textContent = prev;
+          }, 2000);
+        });
+      });
+    }
+
+    var copyIcons = document.querySelectorAll(".btn-copy-icon");
+    copyIcons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var text = btn.getAttribute("data-copy") || "";
+        navigator.clipboard.writeText(text).then(function () {
+          btn.classList.add("is-done");
+          setTimeout(function () {
+            btn.classList.remove("is-done");
+          }, 2000);
+        });
       });
     });
   })();

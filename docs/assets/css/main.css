@@ -420,7 +420,7 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.2;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .hero-title .accent {
@@ -429,9 +429,10 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
 
 .hero-lead {
   max-width: 36rem;
-  margin: 0 auto 1.75rem;
+  margin: 0 auto 2rem;
   color: var(--dim);
   font-size: 1.1rem;
+  line-height: 1.7;
 }
 
 .hero-actions {
@@ -440,6 +441,7 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
   gap: 1rem;
   justify-content: center;
   align-items: center;
+  margin-bottom: 1.75rem;
 }
 
 /* --- Buttons --- */
@@ -512,7 +514,7 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.35rem;
+  padding: 1.75rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -523,16 +525,17 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
 
 .feature-card h3 {
   font-family: var(--font-mono);
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--green);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.65rem;
 }
 
 .feature-card p {
-  font-size: 0.95rem;
-  color: var(--dim);
-  line-height: 1.6;
+  font-size: 0.9rem;
+  color: #7d8590;
+  line-height: 1.75;
+  margin: 0;
 }
 
 /* --- Comparison table --- */
@@ -880,7 +883,7 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
 
 /* --- Homepage (index): sections, grids, comparison --- */
 .section {
-  padding: 3.5rem 0;
+  padding: 5rem 0;
   border-top: 1px solid var(--border);
 }
 
@@ -888,21 +891,21 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
   font-family: var(--font-mono);
   font-size: clamp(1.2rem, 2.5vw, 1.65rem);
   font-weight: 600;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.75rem;
   color: var(--text);
 }
 
 .section-lead {
   color: var(--dim);
   max-width: 42rem;
-  line-height: 1.65;
-  margin-bottom: 1.75rem;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
   font-size: 0.95rem;
 }
 
 .features-grid {
   display: grid;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 @media (min-width: 640px) {
@@ -910,6 +913,12 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .features-grid--three {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 960px) {
   .features-grid--three {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -919,23 +928,56 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.35rem;
+  padding: 1.75rem;
   height: 100%;
 }
 
 .benefit-card h3 {
   font-family: var(--font-mono);
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--green);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .benefit-card p {
   font-size: 0.9rem;
   color: var(--dim);
-  line-height: 1.6;
+  line-height: 1.75;
   margin: 0;
+}
+
+.benefit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.benefit-list li {
+  font-size: 0.9rem;
+  color: var(--dim);
+  line-height: 1.55;
+  padding: 0.3rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.benefit-list li::before {
+  content: ">";
+  position: absolute;
+  left: 0;
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.benefit-list li code {
+  font-size: 0.85em;
+  padding: 0.1em 0.35em;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--green);
 }
 
 .benefit-card .benefit-stat {
@@ -1038,8 +1080,8 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
 .home-hero {
   text-align: left;
   margin-bottom: 0;
-  padding-top: 1.5rem;
-  padding-bottom: 2.5rem;
+  padding-top: 2.5rem;
+  padding-bottom: 3.5rem;
 }
 
 .home-hero .hero-lead {
@@ -1096,14 +1138,14 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
 }
 
 .install-cmd {
-  flex: 1 1 280px;
-  min-width: 0;
+  flex: 1 1 auto;
+  min-width: 280px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 0.65rem 0.85rem;
+  padding: 0.65rem 1rem;
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--green);
   overflow-x: auto;
   white-space: nowrap;
@@ -1210,7 +1252,7 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
 /* --- Steps grid --- */
 .steps-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.5rem;
 }
 
@@ -1218,7 +1260,8 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.25rem;
+  padding: 1.5rem;
+  min-width: 0;
 }
 
 .step-card h3 {
@@ -1249,7 +1292,51 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
   margin: 0;
 }
 
-@media (max-width: 767px) {
+.code-block-wrap {
+  position: relative;
+}
+
+.code-block-wrap .code-block {
+  padding-right: 2.75rem;
+}
+
+.btn-copy-icon {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--surface-elevated);
+  color: var(--dim);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  z-index: 1;
+}
+
+.btn-copy-icon:hover {
+  color: var(--green);
+  border-color: var(--green);
+  background: rgba(0, 255, 65, 0.08);
+}
+
+.btn-copy-icon.is-done {
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.btn-copy-icon svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 959px) {
   .steps-grid {
     grid-template-columns: 1fr;
   }
