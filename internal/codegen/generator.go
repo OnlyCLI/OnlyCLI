@@ -267,10 +267,10 @@ type registerCommandData struct {
 }
 
 func (g *Generator) generateRegister() error {
-	var groups []registerGroupData
+	groups := make([]registerGroupData, 0, len(g.Spec.Groups))
 	for _, group := range g.Spec.Groups {
 		gVarName := model.ToGoPrivateIdentifier(group.Name)
-		var cmds []registerCommandData
+		cmds := make([]registerCommandData, 0, len(group.Commands))
 		for _, cmd := range group.Commands {
 			cmds = append(cmds, registerCommandData{
 				VarName:      model.ToGoPrivateIdentifier(group.Name) + model.ToGoIdentifier(cmd.Name),
@@ -362,7 +362,7 @@ func (g *Generator) renderGoFile(tmplName, outPath string, data interface{}) err
 		return fmt.Errorf("formatting %s: %w\nGenerated code:\n%s", outPath, err, buf.String())
 	}
 
-	return os.WriteFile(outPath, formatted, 0o644)
+	return os.WriteFile(outPath, formatted, 0o600)
 }
 
 // sanitizeGoString makes a string safe for embedding in a Go double-quoted
@@ -392,5 +392,5 @@ func (g *Generator) renderRawFile(tmplName, outPath string, data interface{}) er
 		return fmt.Errorf("executing template %s: %w", tmplName, err)
 	}
 
-	return os.WriteFile(outPath, buf.Bytes(), 0o644)
+	return os.WriteFile(outPath, buf.Bytes(), 0o600)
 }

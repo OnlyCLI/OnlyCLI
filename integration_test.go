@@ -336,7 +336,7 @@ info:
 paths: {}
 `)
 	tmpSpec := filepath.Join(t.TempDir(), "empty.yaml")
-	require.NoError(t, os.WriteFile(tmpSpec, specBytes, 0o644))
+	require.NoError(t, os.WriteFile(tmpSpec, specBytes, 0o600))
 
 	outDir := generateAndBuild(t, tmpSpec, "empty", "bearer")
 	binPath := goBuild(t, outDir, "empty")
@@ -365,7 +365,7 @@ paths:
           description: OK
 `)
 	tmpSpec := filepath.Join(t.TempDir(), "minimal.yaml")
-	require.NoError(t, os.WriteFile(tmpSpec, specBytes, 0o644))
+	require.NoError(t, os.WriteFile(tmpSpec, specBytes, 0o600))
 
 	outDir := generateAndBuild(t, tmpSpec, "minimal", "bearer")
 	binPath := goBuild(t, outDir, "minimal")

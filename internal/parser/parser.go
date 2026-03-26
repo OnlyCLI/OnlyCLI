@@ -32,7 +32,7 @@ func Parse(specBytes []byte, name, authType, authEnvVar, modulePath string) (*mo
 		AuthEnvVar:  authEnvVar,
 	}
 
-	if docModel.Model.Servers != nil && len(docModel.Model.Servers) > 0 {
+	if len(docModel.Model.Servers) > 0 {
 		spec.BaseURL = docModel.Model.Servers[0].URL
 	}
 
@@ -215,12 +215,12 @@ func extractFieldsFromSchema(schema *base.Schema, prefix, jsonPrefix string) []*
 		desc := propSchema.Description
 		defaultVal := ""
 		if propSchema.Default != nil {
-			defaultVal = fmt.Sprintf("%v", propSchema.Default.Value)
+			defaultVal = propSchema.Default.Value
 		}
 		var enumVals []string
 		for _, e := range propSchema.Enum {
 			if e != nil {
-				enumVals = append(enumVals, fmt.Sprintf("%v", e.Value))
+				enumVals = append(enumVals, e.Value)
 			}
 		}
 
@@ -252,11 +252,11 @@ func convertParameter(p *v3.Parameter) *model.Parameter {
 			paramType = schema.Type[0]
 		}
 		if schema.Default != nil {
-			defaultVal = fmt.Sprintf("%v", schema.Default.Value)
+			defaultVal = schema.Default.Value
 		}
 		for _, e := range schema.Enum {
 			if e != nil {
-				enumVals = append(enumVals, fmt.Sprintf("%v", e.Value))
+				enumVals = append(enumVals, e.Value)
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 title: OnlyCLI
 description: "Turn any OpenAPI spec into a native CLI. Zero runtime. Zero bloat."
 url: "https://onlycli.github.io"
-baseurl: ""
+baseurl: "/OnlyCLI"
 markdown: kramdown
 highlighter: rouge
 permalink: /blog/:title/
@@ -27,4 +27,4 @@ social:
   links:
     - https://github.com/onlycli/onlycli
 author: OnlyCLI Team
-google_analytics: G-XXXXXXXXXX
+google_analytics: G-FHB5NHHZDB

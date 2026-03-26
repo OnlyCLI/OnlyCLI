@@ -45,9 +45,9 @@ type Command struct {
 
 // Parameter represents a CLI flag mapped from an OpenAPI parameter.
 type Parameter struct {
-	Name         string   // kebab-case flag name
-	OriginalName string   // Original parameter name from spec
-	In           string   // path, query, header
+	Name         string // kebab-case flag name
+	OriginalName string // Original parameter name from spec
+	In           string // path, query, header
 	Description  string
 	Required     bool
 	Type         string   // string, integer, boolean, number, array

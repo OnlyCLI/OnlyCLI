@@ -90,11 +90,11 @@ func TestParsePetstoreParameters(t *testing.T) {
 
 	// Find showPetById command
 	var showCmd *struct {
-		params   int
-		hasPath  bool
-		hasBody  bool
-		method   string
-		path     string
+		params  int
+		hasPath bool
+		hasBody bool
+		method  string
+		path    string
 	}
 	for _, g := range spec.Groups {
 		for _, c := range g.Commands {
