@@ -58,7 +58,7 @@ jobs:
         with:
           go-version: "1.25.x"
           cache: true
-      - run: go build ./cmd/onlycli/
+      - run: go build ./cmd/onlycli
 
   integration:
     runs-on: ubuntu-latest
