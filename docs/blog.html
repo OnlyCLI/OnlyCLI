@@ -1,0 +1,44 @@
+---
+layout: default
+title: Blog
+permalink: /blog/
+description: "Release notes, guides, and CLI craft from the OnlyCLI team."
+---
+
+<div class="blog-header">
+  <h1 class="blog-title"><span class="blog-prompt" aria-hidden="true">$</span> ls blog/</h1>
+  <p class="blog-lead">Posts from the OnlyCLI team — OpenAPI, native CLIs, and shipping binaries without the bloat.</p>
+</div>
+
+<div class="post-list" role="list">
+  {% for post in site.posts %}
+    <a class="post-card" href="{{ post.url | relative_url }}" role="listitem">
+      <div class="post-card-top">
+        <span class="post-card-prompt" aria-hidden="true">&gt;</span>
+        <h2 class="post-card-title">{{ post.title | escape }}</h2>
+      </div>
+      <div class="post-card-meta">
+        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+      </div>
+      {% if post.excerpt %}
+        <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncate: 200 }}</p>
+      {% endif %}
+    </a>
+  {% endfor %}
+</div>
+
+{% if site.posts.size == 0 %}
+  <div class="terminal-window terminal-window--empty">
+    <div class="terminal-titlebar">
+      <span class="terminal-dot terminal-dot--red" aria-hidden="true"></span>
+      <span class="terminal-dot terminal-dot--yellow" aria-hidden="true"></span>
+      <span class="terminal-dot terminal-dot--green" aria-hidden="true"></span>
+      <span class="terminal-title">onlycli — zsh</span>
+    </div>
+    <div class="terminal-body">
+      <span class="prompt">$ </span><span class="cmd">ls _posts/</span><br>
+      <span class="out out--dim">total 0</span><br>
+      <span class="prompt">$ </span><span class="cmd err">cat: No such posts yet.</span><span class="typing-cursor" aria-hidden="true"></span>
+    </div>
+  </div>
+{% endif %}

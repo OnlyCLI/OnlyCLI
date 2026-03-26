@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include head.html %}
+</head>
+<body>
+{% include header.html %}
+<main class="site-main" id="main">
+{{ content }}
+</main>
+{% include footer.html %}
+{% include analytics.html %}
+<script>
+(function () {
+  var header = document.querySelector(".site-header");
+  if (!header) return;
+  function onScroll() {
+    header.classList.toggle("is-scrolled", window.scrollY > 8);
+  }
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+})();
+</script>
+</body>
+</html>

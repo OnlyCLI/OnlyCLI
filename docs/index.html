@@ -1,0 +1,274 @@
+---
+layout: default
+title: "OnlyCLI — OpenAPI to native CLI, one binary"
+description: "Generate a fast Go CLI from any OpenAPI spec. Full endpoint coverage, JSON YAML table CSV output, OAuth2, pagination, GJSON transforms, and dry-run—no interpreter, no MCP server."
+---
+
+<section class="hero home-hero" aria-labelledby="hero-heading">
+  <div class="hero-grid">
+    <div>
+      <pre class="ascii-logo" aria-hidden="true"><span class="logo-prompt">&gt;</span> <span class="logo-name">OnlyCLI</span><span class="cursor-blink">_</span></pre>
+
+      <h1 id="hero-heading" class="hero-title">Turn any OpenAPI spec into a native CLI</h1>
+      <p class="hero-lead">Zero runtime overhead. Zero bloat. Just a single binary.</p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="{% post_url 2026-03-25-getting-started-with-onlycli %}">Get Started</a>
+        <a class="btn btn-secondary" href="https://github.com/onlycli/onlycli" rel="noopener noreferrer" target="_blank">View on GitHub</a>
+      </div>
+
+      <div class="install-row">
+        <code class="install-cmd">go install github.com/onlycli/onlycli/cmd/onlycli@latest</code>
+        <button type="button" class="btn-copy" id="install-copy-btn" data-copy="go install github.com/onlycli/onlycli/cmd/onlycli@latest" aria-label="Copy install command">Copy</button>
+      </div>
+    </div>
+
+    <div class="terminal-window" role="region" aria-label="Terminal demo">
+      <div class="terminal-titlebar">
+        <span class="terminal-dot terminal-dot--red" aria-hidden="true"></span>
+        <span class="terminal-dot terminal-dot--yellow" aria-hidden="true"></span>
+        <span class="terminal-dot terminal-dot--green" aria-hidden="true"></span>
+        <span class="terminal-title">onlycli — demo</span>
+      </div>
+      <pre class="terminal-body"><span class="prompt">$</span> <span class="cmd">onlycli generate --spec api.yaml --name myapi --out ./myapi-cli</span>
+<span class="out">Generated CLI project at ./myapi-cli
+  Groups: 12
+  Commands: 87
+  Auth: bearer (env: MYAPI_TOKEN)</span>
+
+<span class="prompt">$</span> <span class="cmd">cd myapi-cli && go build -o myapi .</span>
+
+<span class="prompt">$</span> <span class="cmd">./myapi users list --format table</span></pre>
+    </div>
+  </div>
+</section>
+
+<section class="section section-why" aria-labelledby="why-heading">
+  <h2 id="why-heading">Why OnlyCLI?</h2>
+  <p class="section-lead">Your spec is the source of truth. OnlyCLI turns it into a tool you can script, ship, and hand to agents—without paying a runtime tax every time something runs.</p>
+  <div class="features-grid features-grid--three">
+    <article class="benefit-card">
+      <h3>Zero Runtime</h3>
+      <p>No interpreter, no VM. Pure compiled Go binary. <strong class="benefit-stat">50×</strong> faster cold start than MCP tools.</p>
+    </article>
+    <article class="benefit-card">
+      <h3>Full API Coverage</h3>
+      <p>Every endpoint becomes a CLI command. Auto-generated from your OpenAPI spec.</p>
+    </article>
+    <article class="benefit-card">
+      <h3>LLM Agent Ready</h3>
+      <p>Native CLI that any AI agent can call directly. No MCP server needed.</p>
+    </article>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="features-heading">
+  <h2 id="features-heading">Everything in one binary</h2>
+  <p class="section-lead">Flags map cleanly to HTTP—output, auth, pagination, and payloads—so operators and automation share the same interface.</p>
+  <div class="features-grid features-grid--two">
+    <article class="feature-card">
+      <div class="feature-icon" aria-hidden="true">fmt</div>
+      <h3>Multi-format output <span class="feature-inline">(json, yaml, table, csv, pretty)</span></h3>
+      <p>Pick the shape that fits the next pipe: machine JSON, diff-friendly YAML, skim-friendly tables, or spreadsheets via CSV—without swapping tools.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon" aria-hidden="true">--t</div>
+      <h3>GJSON data transformation <span class="feature-inline">(--transform)</span></h3>
+      <p>Project fields and arrays with GJSON paths on the command line. Skip spinning up <code>jq</code> when a single flag answers the question.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon" aria-hidden="true">pg</div>
+      <h3>Auto-pagination <span class="feature-inline">(--page-limit)</span></h3>
+      <p>Walk <code>Link: rel="next"</code> headers and common cursor patterns until your cap—one invocation, complete lists.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon" aria-hidden="true">@</div>
+      <h3><code>@file</code> input syntax</h3>
+      <p>Pass large JSON bodies from disk with <code>@path</code> so shells stay readable and CI jobs stay repeatable.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon" aria-hidden="true">OAuth2</div>
+      <h3>OAuth2 authentication <span class="feature-inline">(device flow + client credentials)</span></h3>
+      <p>Interactive device login for laptops; client credentials for runners. Tokens land where your security model expects them.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon" aria-hidden="true">prof</div>
+      <h3>Multi-profile configuration</h3>
+      <p>Isolate staging, production, and personal tokens. Switch context with a profile flag instead of re-exporting secrets in every shell.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon" aria-hidden="true">H2</div>
+      <h3>HTTP/2 + gzip compression</h3>
+      <p>Modern transport defaults: multiplexed requests where the server supports HTTP/2, compression when it helps latency.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon" aria-hidden="true">retry</div>
+      <h3>Retry with exponential backoff</h3>
+      <p>Transient 429s and 5xx responses get bounded retries with backoff and jitter—tune with <code>--max-retries</code> for flaky networks.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon" aria-hidden="true">dry</div>
+      <h3>Dry-run mode</h3>
+      <p>Print the method, URL, headers, and body that would be sent—ideal for reviews, docs screenshots, and teaching the CLI safely.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon" aria-hidden="true">TAB</div>
+      <h3>Tab completion with enum values</h3>
+      <p>OpenAPI enums surface as completion candidates so shells suggest valid values instead of forcing guess-and-check.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon" aria-hidden="true">a.b</div>
+      <h3>Nested body field flags <span class="feature-inline">(--name.first)</span></h3>
+      <p>Address nested JSON with dotted flags—structured request bodies without heredocs or temporary files.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon" aria-hidden="true">{% raw %}{{ . }}{% endraw %}</div>
+      <h3>Go template output <span class="feature-inline">(--template)</span></h3>
+      <p>When paths are not enough, render responses with Go templates—custom summaries, one-line reports, or ad-hoc exporters.</p>
+    </article>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="example-heading">
+  <h2 id="example-heading">Real-world: GitHub from the official spec</h2>
+  <p class="section-lead">Point <code>onlycli generate</code> at GitHub’s published OpenAPI bundle, compile once, and drive repos and issues from the shell—or from an agent that already knows how to execute commands.</p>
+  <pre class="code-block"><span class="c"># Generate a GitHub CLI from the official spec</span>
+<span class="p">$</span> onlycli generate \
+    --spec https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.yaml \
+    --name github --auth bearer --out ./github-cli
+
+<span class="c"># Build it</span>
+<span class="p">$</span> cd github-cli && go mod tidy && go build -o gh .
+
+<span class="c"># Use it</span>
+<span class="p">$</span> export GITHUB_TOKEN=ghp_xxx
+<span class="p">$</span> ./gh repos list-for-user --username octocat --format table
+<span class="p">$</span> ./gh issues create --owner myorg --repo myrepo --title "Bug fix" --body "Details..."
+<span class="p">$</span> ./gh repos list-for-user --username octocat --transform "#.name"</pre>
+</section>
+
+<section class="section" aria-labelledby="compare-heading">
+  <h2 id="compare-heading">OnlyCLI vs the usual suspects</h2>
+  <p class="section-lead">A quick matrix: generated single binary versus SDKs, config DSLs, and raw HTTP. Read the full write-ups for nuance, maintenance cost, and where each approach wins.</p>
+  <div class="comparison-table-wrap">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th scope="col">Feature</th>
+          <th scope="col">OnlyCLI</th>
+          <th scope="col">Stainless</th>
+          <th scope="col">Restish</th>
+          <th scope="col">curl</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Native binary</td>
+          <td><span class="mark-yes" aria-label="Yes">✓</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+          <td><span class="mark-yes" aria-label="Yes">✓</span></td>
+          <td><span class="mark-yes" aria-label="Yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>OpenAPI-driven</td>
+          <td><span class="mark-yes" aria-label="Yes">✓</span></td>
+          <td><span class="mark-yes" aria-label="Yes">✓</span></td>
+          <td><span class="mark-yes" aria-label="Yes">✓</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+        </tr>
+        <tr>
+          <td>Auto-pagination</td>
+          <td><span class="mark-yes" aria-label="Yes">✓</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+        </tr>
+        <tr>
+          <td>Multi-format</td>
+          <td><span class="mark-yes" aria-label="Yes">✓</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+        </tr>
+        <tr>
+          <td>OAuth2</td>
+          <td><span class="mark-yes" aria-label="Yes">✓</span></td>
+          <td><span class="mark-yes" aria-label="Yes">✓</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+        </tr>
+        <tr>
+          <td><code>@file</code> input</td>
+          <td><span class="mark-yes" aria-label="Yes">✓</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+        </tr>
+        <tr>
+          <td>GJSON transform</td>
+          <td><span class="mark-yes" aria-label="Yes">✓</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+        </tr>
+        <tr>
+          <td>Dry-run</td>
+          <td><span class="mark-yes" aria-label="Yes">✓</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+          <td><span class="mark-no" aria-label="No">✗</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="section-lead comparison-links">Full comparisons:
+    <a href="{{ '/compare/vs-stainless/' | relative_url }}">OnlyCLI vs Stainless</a>,
+    <a href="{{ '/compare/vs-restish/' | relative_url }}">OnlyCLI vs Restish</a>,
+    <a href="{{ '/blog/onlycli-vs-curl-httpie/' | relative_url }}">OnlyCLI vs curl</a>.</p>
+</section>
+
+<section class="section" aria-labelledby="quickstart-heading">
+  <h2 id="quickstart-heading">Get started in 60 seconds</h2>
+  <p class="section-lead">Install the generator, point it at your spec, build, and run <code>--help</code>. That is the whole loop.</p>
+  <pre class="code-block"><span class="c"># Install</span>
+go install github.com/onlycli/onlycli/cmd/onlycli@latest
+
+<span class="c"># Generate your CLI</span>
+onlycli generate --spec your-api.yaml --name your-api --out ./cli
+
+<span class="c"># Build &amp; run</span>
+cd cli && go mod tidy && go build -o your-api .
+./your-api --help</pre>
+</section>
+
+<section class="section section-opensource" aria-labelledby="oss-heading">
+  <h2 id="oss-heading">Open source</h2>
+  <div class="badges-row">
+    <a href="https://github.com/onlycli/onlycli/blob/main/LICENSE" rel="noopener noreferrer" target="_blank"><img src="https://img.shields.io/badge/license-MIT-00ff41?style=flat-square&amp;logo=opensourceinitiative&amp;logoColor=0d1117&amp;labelColor=161b22" alt="License: MIT" loading="lazy" height="20" /></a>
+    <a href="https://github.com/onlycli/onlycli" rel="noopener noreferrer" target="_blank"><img src="https://img.shields.io/github/stars/onlycli/onlycli?style=flat-square&amp;logo=github&amp;label=stars&amp;labelColor=161b22&amp;color=00ff41" alt="GitHub stars" loading="lazy" height="20" /></a>
+  </div>
+  <p class="section-lead">MIT licensed. Contributions welcome—bug reports, docs, and codegen improvements all help.</p>
+  <div class="link-list">
+    <a href="https://github.com/onlycli/onlycli/blob/main/CONTRIBUTING.md" rel="noopener noreferrer" target="_blank">CONTRIBUTING.md</a>
+    <a href="https://github.com/onlycli/onlycli/issues" rel="noopener noreferrer" target="_blank">GitHub Issues</a>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var btn = document.getElementById("install-copy-btn");
+    if (!btn || !navigator.clipboard || !navigator.clipboard.writeText) return;
+    btn.addEventListener("click", function () {
+      var text = btn.getAttribute("data-copy") || "";
+      navigator.clipboard.writeText(text).then(function () {
+        btn.classList.add("is-done");
+        var prev = btn.textContent;
+        btn.textContent = "Copied";
+        setTimeout(function () {
+          btn.classList.remove("is-done");
+          btn.textContent = prev;
+        }, 2000);
+      });
+    });
+  })();
+</script>

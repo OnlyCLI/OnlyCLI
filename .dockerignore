@@ -1,0 +1,11 @@
+.git
+bin/
+dist/
+.cursor/
+.github/
+examples/
+*.md
+coverage.*
+.DS_Store
+.idea/
+.vscode/

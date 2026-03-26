@@ -1,0 +1,47 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.out
+onlycli
+
+# Build output
+/bin/
+bin/
+dist/
+
+# Go
+vendor/
+
+# Test / coverage
+*.coverprofile
+coverage.out
+coverage.html
+*.test
+profile.cov
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Example compiled binaries
+examples/petstore/petstore
+examples/github/github
+
+# Temp / build artifacts
+tmp/
+temp/
+*.log
+*.tmp
+.cache/
+
+TODO.md

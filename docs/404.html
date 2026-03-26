@@ -1,0 +1,27 @@
+---
+layout: default
+title: "404 — Not Found"
+permalink: /404.html
+description: "The page you requested was not found."
+---
+
+<div class="error-page">
+  <div class="terminal-window error-terminal">
+    <div class="terminal-titlebar">
+      <span class="terminal-dot terminal-dot--red" aria-hidden="true"></span>
+      <span class="terminal-dot terminal-dot--yellow" aria-hidden="true"></span>
+      <span class="terminal-dot terminal-dot--green" aria-hidden="true"></span>
+      <span class="terminal-title">onlycli — error</span>
+    </div>
+    <div class="terminal-body error-terminal-body">
+      <p><span class="prompt">$</span> <span class="cmd">onlycli fetch <span class="path-404">/this-page</span></span></p>
+      <p class="error-line"><span class="err-label">404</span> <span class="err-msg">Not Found</span></p>
+      <p class="error-sub"><kbd>page</kbd>: command not found — the path you requested does not exist on this host.</p>
+      <p class="error-hint"><span class="prompt">$</span> <span class="hint-cmd"># try:</span></p>
+      <div class="error-actions">
+        <a class="btn btn-primary" href="{{ '/' | relative_url }}">cd ~ <span class="btn-hint">(home)</span></a>
+        <a class="btn btn-secondary" href="{{ '/blog/' | relative_url }}">cd blog/</a>
+      </div>
+    </div>
+  </div>
+</div>

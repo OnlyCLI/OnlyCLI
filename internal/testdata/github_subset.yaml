@@ -1,0 +1,804 @@
+openapi: "3.0.3"
+info:
+  title: GitHub REST API (Subset)
+  description: A subset of the GitHub REST API for testing onlycli code generation.
+  version: "1.1.4"
+  contact:
+    name: GitHub Support
+    url: https://support.github.com
+  license:
+    name: MIT
+servers:
+  - url: https://api.github.com
+tags:
+  - name: repos
+    description: Repository operations
+  - name: issues
+    description: Issue operations
+  - name: pulls
+    description: Pull request operations
+  - name: users
+    description: User operations
+  - name: search
+    description: Search operations
+paths:
+  /repos/{owner}/{repo}:
+    get:
+      operationId: repos/get
+      summary: Get a repository
+      description: Gets detailed information about a repository.
+      tags:
+        - repos
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          description: The account owner of the repository
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          description: The name of the repository
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Repository details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Repository"
+    patch:
+      operationId: repos/update
+      summary: Update a repository
+      description: Updates the specified repository.
+      tags:
+        - repos
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                homepage:
+                  type: string
+                private:
+                  type: boolean
+                default_branch:
+                  type: string
+      responses:
+        "200":
+          description: Updated repository
+  /repos/{owner}/{repo}/topics:
+    get:
+      operationId: repos/get-all-topics
+      summary: Get all repository topics
+      tags:
+        - repos
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page number of the results
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          description: Number of results per page
+          schema:
+            type: integer
+            default: 30
+      responses:
+        "200":
+          description: Repository topics
+  /user/repos:
+    get:
+      operationId: repos/list-for-authenticated-user
+      summary: List repositories for the authenticated user
+      tags:
+        - repos
+      parameters:
+        - name: visibility
+          in: query
+          description: Limit results to repositories with the specified visibility
+          schema:
+            type: string
+            enum:
+              - all
+              - public
+              - private
+            default: all
+        - name: sort
+          in: query
+          description: Property to sort results by
+          schema:
+            type: string
+            enum:
+              - created
+              - updated
+              - pushed
+              - full_name
+            default: full_name
+        - name: direction
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 30
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: List of repositories
+  /users/{username}/repos:
+    get:
+      operationId: repos/list-for-user
+      summary: List repositories for a user
+      tags:
+        - repos
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: The handle for the GitHub user account
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: Type of repositories to list
+          schema:
+            type: string
+            enum:
+              - all
+              - owner
+              - member
+            default: owner
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum:
+              - created
+              - updated
+              - pushed
+              - full_name
+            default: full_name
+        - name: direction
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 30
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: List of repositories
+  /repos/{owner}/{repo}/issues:
+    get:
+      operationId: issues/list-for-repo
+      summary: List repository issues
+      description: List issues in a repository. Only open issues will be listed.
+      tags:
+        - issues
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: "Filter by state: open, closed, or all"
+          schema:
+            type: string
+            enum:
+              - open
+              - closed
+              - all
+            default: open
+        - name: labels
+          in: query
+          description: Comma-separated list of label names
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum:
+              - created
+              - updated
+              - comments
+            default: created
+        - name: direction
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 30
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: List of issues
+    post:
+      operationId: issues/create
+      summary: Create an issue
+      description: Creates a new issue in a repository.
+      tags:
+        - issues
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                  description: The title of the issue
+                body:
+                  type: string
+                  description: The contents of the issue
+                labels:
+                  type: array
+                  items:
+                    type: string
+                assignees:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "201":
+          description: Created issue
+  /repos/{owner}/{repo}/issues/{issue_number}:
+    get:
+      operationId: issues/get
+      summary: Get an issue
+      tags:
+        - issues
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: issue_number
+          in: path
+          required: true
+          description: The number that identifies the issue
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Issue details
+    patch:
+      operationId: issues/update
+      summary: Update an issue
+      tags:
+        - issues
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: issue_number
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                body:
+                  type: string
+                state:
+                  type: string
+                  enum:
+                    - open
+                    - closed
+                labels:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Updated issue
+  /repos/{owner}/{repo}/issues/{issue_number}/comments:
+    get:
+      operationId: issues/list-comments
+      summary: List issue comments
+      tags:
+        - issues
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: issue_number
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 30
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: List of comments
+  /repos/{owner}/{repo}/pulls:
+    get:
+      operationId: pulls/list
+      summary: List pull requests
+      description: Lists pull requests in a repository.
+      tags:
+        - pulls
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: "Filter by state: open, closed, or all"
+          schema:
+            type: string
+            enum:
+              - open
+              - closed
+              - all
+            default: open
+        - name: head
+          in: query
+          description: "Filter by head user or head organization and branch name"
+          schema:
+            type: string
+        - name: base
+          in: query
+          description: Filter by base branch name
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum:
+              - created
+              - updated
+              - popularity
+              - long-running
+            default: created
+        - name: direction
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 30
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: List of pull requests
+    post:
+      operationId: pulls/create
+      summary: Create a pull request
+      tags:
+        - pulls
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - head
+                - base
+              properties:
+                title:
+                  type: string
+                body:
+                  type: string
+                head:
+                  type: string
+                  description: The name of the branch where your changes are implemented
+                base:
+                  type: string
+                  description: The name of the branch you want the changes pulled into
+                draft:
+                  type: boolean
+      responses:
+        "201":
+          description: Created pull request
+  /repos/{owner}/{repo}/pulls/{pull_number}:
+    get:
+      operationId: pulls/get
+      summary: Get a pull request
+      tags:
+        - pulls
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pull_number
+          in: path
+          required: true
+          description: The number that identifies the pull request
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Pull request details
+  /repos/{owner}/{repo}/pulls/{pull_number}/merge:
+    put:
+      operationId: pulls/merge
+      summary: Merge a pull request
+      tags:
+        - pulls
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pull_number
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                commit_title:
+                  type: string
+                commit_message:
+                  type: string
+                merge_method:
+                  type: string
+                  enum:
+                    - merge
+                    - squash
+                    - rebase
+      responses:
+        "200":
+          description: Merge result
+  /user:
+    get:
+      operationId: users/get-authenticated
+      summary: Get the authenticated user
+      description: Returns the authenticated user's profile information.
+      tags:
+        - users
+      responses:
+        "200":
+          description: User profile
+  /users/{username}:
+    get:
+      operationId: users/get-by-username
+      summary: Get a user
+      tags:
+        - users
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: The handle for the GitHub user account
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User profile
+  /search/repositories:
+    get:
+      operationId: search/repos
+      summary: Search repositories
+      description: Find repositories via various criteria.
+      tags:
+        - search
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: The search query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: Sort field
+          schema:
+            type: string
+            enum:
+              - stars
+              - forks
+              - help-wanted-issues
+              - updated
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 30
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Search results
+  /search/issues:
+    get:
+      operationId: search/issues-and-pull-requests
+      summary: Search issues and pull requests
+      tags:
+        - search
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: The search query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum:
+              - comments
+              - reactions
+              - reactions-+1
+              - reactions--1
+              - reactions-smile
+              - reactions-thinking_face
+              - reactions-heart
+              - reactions-tada
+              - interactions
+              - created
+              - updated
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 30
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Search results
+  /special-chars-test:
+    get:
+      operationId: misc/special-chars
+      summary: 'Test endpoint with "special" characters in descriptions'
+      description: |
+        This endpoint tests multi-line descriptions.
+        It has "quotes" and \backslashes\ and `backticks`.
+        
+        It also has blank lines and trailing whitespace.   
+      tags:
+        - misc
+      parameters:
+        - name: filter
+          in: query
+          description: |
+            Filter results by type. Provide a comma-separated list of values (e.g., `foo` or `bar,baz`).
+            Use `*` to list all or `none` to list empty.
+          schema:
+            type: string
+        - name: note
+          in: query
+          description: 'A param with "double quotes" inside'
+          schema:
+            type: string
+        - name: path_info
+          in: query
+          description: 'Paths like C:\Users\test or /usr/local/bin'
+          schema:
+            type: string
+        - name: multiline_default
+          in: query
+          description: A parameter with a complex default
+          schema:
+            type: string
+            default: "hello world"
+      responses:
+        "200":
+          description: OK
+  /no-operation-id:
+    get:
+      summary: An endpoint without operationId for testing fallback naming
+      tags:
+        - misc
+      responses:
+        "200":
+          description: OK
+  /no-tags:
+    get:
+      operationId: noTagsEndpoint
+      summary: An endpoint without tags for testing default group
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    Repository:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        full_name:
+          type: string
+        description:
+          type: string
+        private:
+          type: boolean
+        html_url:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - bearerAuth: []

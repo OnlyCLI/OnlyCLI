@@ -1,0 +1,25 @@
+<header class="site-header" role="banner">
+  <div class="header-inner">
+    <a class="site-logo" href="{{ '/' | relative_url }}" aria-label="{{ site.title }} home">
+      <span class="site-logo-prompt">&gt;</span> OnlyCLI
+    </a>
+
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" tabindex="-1">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Open menu">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </label>
+
+    <nav class="site-nav" aria-label="Primary">
+      <ul class="nav-list">
+        <li><a href="{{ '/' | relative_url }}#features-heading">Features</a></li>
+        <li><a href="{{ '/' | relative_url }}#compare-heading">Compare</a></li>
+        <li><a href="{{ '/blog/' | relative_url }}">Blog</a></li>
+        <li><a href="{{ '/docs/' | relative_url }}">Docs</a></li>
+        <li><a href="https://github.com/onlycli/onlycli" rel="noopener noreferrer" target="_blank">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<div class="header-spacer" aria-hidden="true"></div>
