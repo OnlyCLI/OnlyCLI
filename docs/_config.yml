@@ -1,5 +1,5 @@
 title: OnlyCLI
-description: "Turn any OpenAPI spec into a native CLI. Zero runtime. Zero bloat."
+description: "Turn any OpenAPI spec into a native CLI. 35x fewer tokens than MCP. Zero runtime. Zero bloat."
 url: "https://onlycli.github.io"
 baseurl: "/OnlyCLI"
 markdown: kramdown

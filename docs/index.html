@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "OnlyCLI -- Turn any OpenAPI spec into a native CLI"
-description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 1,107 GitHub API commands from one command. Auth, pagination, table/YAML/CSV output, GJSON transforms, and shell completion -- all in a single binary."
+description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 35x fewer tokens than MCP for AI agents. Auth, pagination, streaming, table/YAML/CSV, GJSON transforms -- all in a single binary."
 ---
 
 <section class="hero home-hero" aria-labelledby="hero-heading">
@@ -50,6 +50,10 @@ description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 1,107 GitHub
     <div class="stat-item">
       <span class="stat-number">1,107</span>
       <span class="stat-label">commands from the GitHub API spec</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">35x</span>
+      <span class="stat-label">fewer tokens than MCP for AI agents</span>
     </div>
     <div class="stat-item">
       <span class="stat-number">1</span>
@@ -276,11 +280,11 @@ description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 1,107 GitHub
           <td><span class="mark-no" aria-label="No">No</span></td>
         </tr>
         <tr>
-          <td>Low token cost for AI agents</td>
-          <td><strong><span class="mark-yes" aria-label="Yes">Yes</span></strong></td>
-          <td><span class="mark-yes" aria-label="Yes">Yes</span></td>
-          <td><span class="mark-yes" aria-label="Yes">Yes</span></td>
-          <td><span class="mark-no" aria-label="No">No</span></td>
+          <td><a href="{{ '/token-cost/' | relative_url }}" style="color:inherit;text-decoration:underline dotted">35x fewer tokens than MCP</a></td>
+          <td><strong><span class="mark-yes" aria-label="Yes">~200 tok</span></strong></td>
+          <td><span class="mark-yes" aria-label="Yes">Low</span></td>
+          <td><span class="mark-yes" aria-label="Yes">Low</span></td>
+          <td><span class="mark-no" aria-label="No">55K+ tok</span></td>
         </tr>
         <tr>
           <td>Streaming (SSE / NDJSON)</td>
@@ -299,8 +303,8 @@ description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 1,107 GitHub
 </section>
 
 <section class="section" aria-labelledby="agents-heading">
-  <h2 id="agents-heading">Built for AI agents</h2>
-  <p class="section-lead">MCP pushes full API schemas into every LLM prompt -- thousands of tokens per turn, whether the model uses them or not. OnlyCLI generates a binary that agents call like any other command.</p>
+  <h2 id="agents-heading">Built for AI agents -- 35x cheaper than MCP</h2>
+  <p class="section-lead">A GitHub MCP server loads <strong>55,000 tokens</strong> into every prompt. Three services eat <strong>72% of your context window</strong> on idle. OnlyCLI generates a binary that agents call like any command -- <code>--help</code> costs <strong>~200 tokens</strong>. <a href="{{ '/token-cost/' | relative_url }}">See the full cost breakdown</a>.</p>
   <pre class="code-block"><span class="c"># Agent discovers available commands</span>
 <span class="p">$</span> ./gh --help
 <span class="p">$</span> ./gh repos --help

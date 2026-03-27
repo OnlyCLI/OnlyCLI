@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "Documentation"
-description: "Complete documentation for OnlyCLI - generate native CLIs from OpenAPI specifications."
+description: "Complete documentation for OnlyCLI. Generate native CLIs from OpenAPI specs with auto-pagination, streaming, GJSON transforms, and 35x fewer tokens than MCP."
 permalink: /docs/
 ---
 
