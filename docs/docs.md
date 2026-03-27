@@ -117,7 +117,8 @@ Global flags apply to **every** operation command (inherited from the root comma
 | `--transform` | (empty) | [GJSON](https://github.com/tidwall/gjson) path applied to JSON before formatting. |
 | `--template` | (empty) | [Go `text/template`](https://pkg.go.dev/text/template) executed on decoded JSON. |
 | `--profile` | (empty) | Select a named configuration profile. |
-| `--page-limit` | `0` | Max pages for **GET** requests that paginate via `Link` `rel="next"` (`0` = single response). |
+| `--page-limit` | `0` | Max pages for **GET** requests (`0` = single response). Auto-detects Link header, cursor, offset, and page-number schemes. |
+| `--stream` | `false` | Stream response line-by-line (SSE / NDJSON). |
 | `--dry-run` | `false` | Print method, URL, headers, and body preview; do not send HTTP. |
 | `--max-retries` | `0` | Retry count for **429** and **5xx** (`0` = no retries). Uses exponential backoff and honors `Retry-After`. |
 | `--verbose` | `false` | Log request/response details to stderr. |
@@ -171,10 +172,46 @@ See the [GJSON path syntax](https://github.com/tidwall/gjson#path-syntax) for mo
 
 ### Pagination (`--page-limit`)
 
-For **GET** requests, when the server returns **`Link`** headers with `rel="next"`, setting `--page-limit` &gt; `0` follows those URLs until no next link or the limit is reached. Responses that are JSON **arrays** are **merged** into one array; non-array bodies return the last page as-is.
+Setting `--page-limit` > `0` on **GET** requests enables auto-pagination. OnlyCLI detects the pagination scheme automatically from each response:
+
+| Scheme | Detection |
+|--------|-----------|
+| **Link header** | `Link: <url>; rel="next"` header |
+| **Cursor (body)** | Response fields like `next_cursor`, `next_page_token`, `end_cursor` in top-level or nested objects (`pagination`, `meta`, `page_info`, etc.) |
+| **Cursor URL (body)** | Response fields like `next`, `next_url`, `next_page` containing an absolute URL |
+| **Page number** | Increments `page` query parameter; stops on empty results |
+| **Offset** | Similar to page number but uses `offset` parameter |
+
+Responses are **merged**: JSON arrays are concatenated; wrapped responses (e.g. `{"data":[...]}`) are unwrapped and merged.
 
 ```bash
+# Link header pagination (e.g. GitHub)
 ./github repos list-for-user --username octocat --page-limit 5 --format json
+
+# Cursor-based APIs (auto-detected from response body)
+./slack conversations-list --page-limit 10
+
+# Page-number APIs
+./myapi items list --page 1 --page-limit 20
+```
+
+---
+
+### Streaming (`--stream`)
+
+The `--stream` flag reads the response body line-by-line instead of buffering it, suitable for **Server-Sent Events** (SSE) and **NDJSON** streams.
+
+- **SSE** (`text/event-stream`): parses `data:` lines, skips comments and control fields, stops on `[DONE]`.
+- **NDJSON** (`application/x-ndjson`): each line is treated as a standalone JSON object.
+
+Each line is formatted according to `--format` (default: compact JSON).
+
+```bash
+# SSE streaming endpoint
+./myapi events stream --stream --format pretty
+
+# NDJSON log tail
+./myapi logs tail --stream --format json
 ```
 
 ---
@@ -365,7 +402,7 @@ OnlyCLI intentionally avoids MCP for calling your API: you ship a **binary** (pl
 
 ### How is pagination detected?
 
-Only **`Link`** headers with a **`next` relation** are followed. Cursor-in-body or page-number APIs without `Link` are not auto-merged; call explicit `--page` flags your spec exposes.
+OnlyCLI tries multiple schemes in priority order: **Link header** (`rel="next"`), **body-based next URL** (fields like `next`, `next_url`), **body-based cursor** (fields like `next_cursor`, `next_page_token` in top-level or nested `pagination`/`meta` objects), and **page-number increment** (auto-increments `page` param, stops on empty results). The first matching scheme is used for each page.
 
 ### Is Windows supported?
 

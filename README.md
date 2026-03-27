@@ -49,7 +49,8 @@ Every generated CLI ships with:
 | 7 output formats | `--format json\|yaml\|table\|csv\|pretty\|jsonl\|raw` |
 | Field projection | `--transform "#.name"` via [GJSON](https://github.com/tidwall/gjson) |
 | Go template output | `--template '{{.login}}'` |
-| Auto-pagination | `--page-limit N` follows `Link` headers |
+| Auto-pagination | `--page-limit N` auto-detects Link, cursor, offset, page-number |
+| Streaming | `--stream` for SSE and NDJSON responses |
 | File input | `--data @payload.json` or `--data @-` for stdin |
 | OAuth2 authentication | Device flow (interactive) + client credentials (CI) |
 | Multi-profile config | `config set staging.token xxx && --profile staging` |
@@ -81,7 +82,8 @@ make generate-example
 | Typed commands per endpoint | **Yes** | No | Yes | Varies |
 | Single distributable binary | **Yes** | Yes | Yes | No |
 | Output formatting (table/yaml/csv) | **Yes** | No | No | No |
-| Built-in pagination | **Yes** | No | No | No |
+| Multi-scheme pagination | **Yes** | No | No | No |
+| Streaming (SSE/NDJSON) | **Yes** | Manual | No | Varies |
 | Works offline, no server process | **Yes** | Yes | Yes | No |
 | Token cost for AI agents | **Low** | Low | Low | High |
 

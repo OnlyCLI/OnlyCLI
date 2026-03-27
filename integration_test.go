@@ -426,12 +426,40 @@ func TestIntegration_OutputFormats(t *testing.T) {
 	outDir := generateAndBuild(t, "internal/testdata/petstore.yaml", "petstore", "apikey")
 	binPath := goBuild(t, outDir, "petstore")
 
-	// Verify --format flag exists on all commands
 	helpOutput := runCLI(t, binPath, "pets", "list", "--help")
 	assert.Contains(t, helpOutput, "--format")
 	assert.Contains(t, helpOutput, "--transform")
 	assert.Contains(t, helpOutput, "--verbose")
 	assert.Contains(t, helpOutput, "--page-limit")
+}
+
+func TestIntegration_StreamFlag(t *testing.T) {
+	outDir := generateAndBuild(t, "internal/testdata/petstore.yaml", "petstore", "apikey")
+	binPath := goBuild(t, outDir, "petstore")
+
+	helpOutput := runCLI(t, binPath, "--help")
+	assert.Contains(t, helpOutput, "--stream")
+
+	listHelp := runCLI(t, binPath, "pets", "list", "--help")
+	assert.Contains(t, listHelp, "--stream")
+}
+
+func TestIntegration_PaginationFlagDescription(t *testing.T) {
+	outDir := generateAndBuild(t, "internal/testdata/petstore.yaml", "petstore", "apikey")
+	binPath := goBuild(t, outDir, "petstore")
+
+	helpOutput := runCLI(t, binPath, "--help")
+	assert.Contains(t, helpOutput, "--page-limit")
+	assert.Contains(t, helpOutput, "cursor")
+}
+
+func TestIntegration_StreamFlagOnGitHub(t *testing.T) {
+	outDir := generateAndBuild(t, "internal/testdata/github_subset.yaml", "github", "bearer")
+	binPath := goBuild(t, outDir, "github")
+
+	helpOutput := runCLI(t, binPath, "--help")
+	assert.Contains(t, helpOutput, "--stream")
+	assert.Contains(t, helpOutput, "SSE")
 }
 
 func TestIntegration_BodyFieldFlags(t *testing.T) {

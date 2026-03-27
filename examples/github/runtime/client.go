@@ -3,6 +3,7 @@
 package runtime
 
 import (
+	"bufio"
 	"bytes"
 	"compress/gzip"
 	"crypto/tls"
@@ -21,9 +22,10 @@ import (
 )
 
 type Response struct {
-	StatusCode int
-	Headers    http.Header
-	Body       []byte
+	StatusCode   int
+	Headers      http.Header
+	Body         []byte
+	StreamReader io.ReadCloser // Non-nil when response is streamed line-by-line
 }
 
 type Client struct {
@@ -34,6 +36,7 @@ type Client struct {
 	PageLimit  int
 	DryRun     bool
 	MaxRetries int
+	Stream     bool
 	HTTPClient *http.Client
 }
 
@@ -63,6 +66,13 @@ func NewClientFromConfig(cmd *cobra.Command) *Client {
 	if cmd != nil {
 		if cmd.PersistentFlags().Lookup("max-retries") != nil {
 			maxRetries, _ = cmd.PersistentFlags().GetInt("max-retries")
+		}
+	}
+
+	var stream bool
+	if cmd != nil {
+		if cmd.PersistentFlags().Lookup("stream") != nil {
+			stream, _ = cmd.PersistentFlags().GetBool("stream")
 		}
 	}
 
@@ -107,6 +117,7 @@ func NewClientFromConfig(cmd *cobra.Command) *Client {
 		PageLimit:  pageLimit,
 		DryRun:     dryRun,
 		MaxRetries: maxRetries,
+		Stream:     stream,
 		HTTPClient: &http.Client{Transport: tr},
 	}
 }
@@ -116,34 +127,107 @@ func NewClientFromEnv() *Client {
 }
 
 func (c *Client) Do(method, path string, params map[string]string, body []byte) (*Response, error) {
+	if c.Stream {
+		return c.doStream(method, path, params, body)
+	}
 	if c.PageLimit > 0 && method == "GET" {
 		return c.doAllPages(method, path, params, body)
 	}
 	return c.doSingle(method, path, params, body)
 }
 
+// ---------------------------------------------------------------------------
+// Streaming
+// ---------------------------------------------------------------------------
+
+func (c *Client) doStream(method, path string, params map[string]string, body []byte) (*Response, error) {
+	u, err := url.Parse(c.BaseURL + path)
+	if err != nil {
+		return nil, fmt.Errorf("invalid URL: %w", err)
+	}
+	q := u.Query()
+	for k, v := range params {
+		q.Set(k, v)
+	}
+	u.RawQuery = q.Encode()
+
+	rawURL := u.String()
+	if c.DryRun {
+		return c.dryRunResponse(method, rawURL, body)
+	}
+
+	httpResp, err := c.roundTripRaw(method, rawURL, body)
+	if err != nil {
+		return nil, err
+	}
+
+	reader := decompressReader(httpResp)
+
+	return &Response{
+		StatusCode:   httpResp.StatusCode,
+		Headers:      httpResp.Header.Clone(),
+		StreamReader: &streamCloser{reader: reader, body: httpResp.Body},
+	}, nil
+}
+
+type streamCloser struct {
+	reader io.Reader
+	body   io.ReadCloser
+}
+
+func (sc *streamCloser) Read(p []byte) (int, error) { return sc.reader.Read(p) }
+func (sc *streamCloser) Close() error               { return sc.body.Close() }
+
+// ---------------------------------------------------------------------------
+// Multi-scheme pagination
+// ---------------------------------------------------------------------------
+
 func (c *Client) doAllPages(method, path string, params map[string]string, body []byte) (*Response, error) {
 	var bodies [][]byte
 	var last *Response
 	nextURL := ""
+
+	currentParams := make(map[string]string, len(params))
+	for k, v := range params {
+		currentParams[k] = v
+	}
+
 	for i := 0; i < c.PageLimit; i++ {
 		var resp *Response
 		var err error
 		if nextURL != "" {
 			resp, err = c.doAbsoluteURL(method, nextURL, body)
 		} else {
-			resp, err = c.doSingle(method, path, params, body)
+			resp, err = c.doSingle(method, path, currentParams, body)
 		}
 		if err != nil {
 			return nil, err
 		}
 		last = resp
 		bodies = append(bodies, resp.Body)
-		nextURL = parseNextLink(resp.Headers.Get("Link"))
-		if nextURL == "" {
+
+		pg := detectNextPage(resp.Headers, resp.Body, currentParams)
+		if pg.done {
 			break
 		}
+		if pg.nextURL != "" {
+			nextURL = pg.nextURL
+			continue
+		}
+		if pg.cursorValue != "" && pg.cursorParam != "" {
+			nextURL = ""
+			currentParams[pg.cursorParam] = pg.cursorValue
+			continue
+		}
+		if pg.incrementPage {
+			nextURL = ""
+			pageVal, _ := strconv.Atoi(currentParams["page"])
+			currentParams["page"] = strconv.Itoa(pageVal + 1)
+			continue
+		}
+		break
 	}
+
 	if last == nil {
 		return nil, fmt.Errorf("no response from pagination")
 	}
@@ -153,6 +237,140 @@ func (c *Client) doAllPages(method, path string, params map[string]string, body 
 		Headers:    last.Headers.Clone(),
 		Body:       merged,
 	}, nil
+}
+
+type pageDetectResult struct {
+	nextURL       string
+	cursorValue   string
+	cursorParam   string
+	incrementPage bool
+	done          bool
+}
+
+func detectNextPage(headers http.Header, body []byte, params map[string]string) pageDetectResult {
+	// Scheme 1: Link header rel="next"
+	if link := parseNextLink(headers.Get("Link")); link != "" {
+		return pageDetectResult{nextURL: link}
+	}
+
+	var obj map[string]json.RawMessage
+	if err := json.Unmarshal(bytes.TrimSpace(body), &obj); err != nil {
+		return pageDetectResult{done: true}
+	}
+
+	// Scheme 2: Top-level next-URL field
+	for _, key := range []string{"next", "next_url", "next_page", "next_link"} {
+		if raw, ok := obj[key]; ok {
+			var s string
+			if json.Unmarshal(raw, &s) == nil && strings.HasPrefix(s, "http") {
+				return pageDetectResult{nextURL: s}
+			}
+		}
+	}
+
+	// Scheme 3: Nested pagination object with URL or cursor
+	for _, nestKey := range []string{"pagination", "paging", "meta", "page_info", "cursors", "response_metadata"} {
+		raw, ok := obj[nestKey]
+		if !ok {
+			continue
+		}
+		var sub map[string]json.RawMessage
+		if json.Unmarshal(raw, &sub) != nil {
+			continue
+		}
+		for _, key := range []string{"next", "next_url", "next_page"} {
+			if sv, ok := sub[key]; ok {
+				var s string
+				if json.Unmarshal(sv, &s) == nil && strings.HasPrefix(s, "http") {
+					return pageDetectResult{nextURL: s}
+				}
+			}
+		}
+		for _, key := range []string{"next_cursor", "end_cursor", "next_page_token", "continuation_token"} {
+			if sv, ok := sub[key]; ok {
+				var s string
+				if json.Unmarshal(sv, &s) == nil && s != "" {
+					cp := guessCursorParam(params, key)
+					return pageDetectResult{cursorValue: s, cursorParam: cp}
+				}
+			}
+		}
+		for _, key := range []string{"has_more", "has_next_page", "has_next"} {
+			if sv, ok := sub[key]; ok {
+				var b bool
+				if json.Unmarshal(sv, &b) == nil && !b {
+					return pageDetectResult{done: true}
+				}
+			}
+		}
+	}
+
+	// Scheme 4: Top-level cursor fields
+	for _, key := range []string{"next_cursor", "next_page_token", "continuation_token"} {
+		if raw, ok := obj[key]; ok {
+			var s string
+			if json.Unmarshal(raw, &s) == nil && s != "" {
+				cp := guessCursorParam(params, key)
+				return pageDetectResult{cursorValue: s, cursorParam: cp}
+			}
+		}
+	}
+
+	// Scheme 5: Page-number increment (if "page" param exists)
+	if _, hasPage := params["page"]; hasPage {
+		if isEmptyArray(body) {
+			return pageDetectResult{done: true}
+		}
+		return pageDetectResult{incrementPage: true}
+	}
+
+	return pageDetectResult{done: true}
+}
+
+func guessCursorParam(params map[string]string, bodyField string) string {
+	candidates := []string{"cursor", "after", "page_token", "starting_after", "next_page_token"}
+	for _, c := range candidates {
+		if _, ok := params[c]; ok {
+			return c
+		}
+	}
+	mapping := map[string]string{
+		"next_cursor":        "cursor",
+		"end_cursor":         "after",
+		"next_page_token":    "page_token",
+		"continuation_token": "cursor",
+	}
+	if p, ok := mapping[bodyField]; ok {
+		return p
+	}
+	return "cursor"
+}
+
+func isEmptyArray(body []byte) bool {
+	body = bytes.TrimSpace(body)
+	if len(body) < 2 {
+		return false
+	}
+	if body[0] == '[' {
+		var arr []json.RawMessage
+		if json.Unmarshal(body, &arr) == nil && len(arr) == 0 {
+			return true
+		}
+	}
+	if body[0] == '{' {
+		var obj map[string]json.RawMessage
+		if json.Unmarshal(body, &obj) == nil {
+			for _, key := range []string{"data", "results", "items", "records", "entries"} {
+				if raw, ok := obj[key]; ok {
+					var arr []json.RawMessage
+					if json.Unmarshal(raw, &arr) == nil && len(arr) == 0 {
+						return true
+					}
+				}
+			}
+		}
+	}
+	return false
 }
 
 func mergePaginatedBodies(pages [][]byte) []byte {
@@ -168,14 +386,31 @@ func mergePaginatedBodies(pages [][]byte) []byte {
 		if len(p) == 0 {
 			continue
 		}
-		if p[0] != '[' {
+		if p[0] == '[' {
+			var chunk []json.RawMessage
+			if err := json.Unmarshal(p, &chunk); err != nil {
+				return pages[len(pages)-1]
+			}
+			merged = append(merged, chunk...)
+			continue
+		}
+		if p[0] == '{' {
+			var obj map[string]json.RawMessage
+			if json.Unmarshal(p, &obj) == nil {
+				for _, key := range []string{"data", "results", "items", "records", "entries"} {
+					if raw, ok := obj[key]; ok {
+						var chunk []json.RawMessage
+						if json.Unmarshal(raw, &chunk) == nil {
+							merged = append(merged, chunk...)
+							goto nextPage
+						}
+					}
+				}
+			}
 			return pages[len(pages)-1]
 		}
-		var chunk []json.RawMessage
-		if err := json.Unmarshal(p, &chunk); err != nil {
-			return pages[len(pages)-1]
-		}
-		merged = append(merged, chunk...)
+		return pages[len(pages)-1]
+	nextPage:
 	}
 	out, err := json.Marshal(merged)
 	if err != nil {
@@ -204,6 +439,10 @@ func parseNextLink(linkHeader string) string {
 	return ""
 }
 
+// ---------------------------------------------------------------------------
+// Core HTTP
+// ---------------------------------------------------------------------------
+
 func (c *Client) doSingle(method, path string, params map[string]string, body []byte) (*Response, error) {
 	u, err := url.Parse(c.BaseURL + path)
 	if err != nil {
@@ -225,6 +464,18 @@ func (c *Client) doAbsoluteURL(method, rawURL string, body []byte) (*Response, e
 }
 
 func (c *Client) doURL(method, rawURL string, body []byte) (*Response, error) {
+	if c.DryRun {
+		return c.dryRunResponse(method, rawURL, body)
+	}
+
+	httpResp, err := c.roundTripRaw(method, rawURL, body)
+	if err != nil {
+		return nil, err
+	}
+	return c.bufferResponse(httpResp)
+}
+
+func (c *Client) dryRunResponse(method, rawURL string, body []byte) (*Response, error) {
 	var bodyReader io.Reader
 	if len(body) > 0 {
 		bodyReader = bytes.NewReader(body)
@@ -234,27 +485,21 @@ func (c *Client) doURL(method, rawURL string, body []byte) (*Response, error) {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 	c.applyRequestHeaders(req, len(body) > 0)
-	if c.DryRun {
-		fmt.Fprintf(os.Stdout, "%s %s\n", method, rawURL)
-		for k, vv := range req.Header {
-			fmt.Fprintf(os.Stdout, "%s: %s\n", k, strings.Join(vv, ", "))
-		}
-		const maxPreview = 2048
-		if len(body) == 0 {
-			fmt.Fprintf(os.Stdout, "Body: (empty)\n")
-		} else if len(body) > maxPreview {
-			fmt.Fprintf(os.Stdout, "Body (%d bytes, preview): %s\n", len(body), string(body[:maxPreview]))
-		} else {
-			fmt.Fprintf(os.Stdout, "Body: %s\n", string(body))
-		}
-		fmt.Fprintf(os.Stdout, "dry-run: request not sent\n")
-		return &Response{
-			StatusCode: 0,
-			Headers:    make(http.Header),
-			Body:       nil,
-		}, nil
+
+	fmt.Fprintf(os.Stdout, "%s %s\n", method, rawURL)
+	for k, vv := range req.Header {
+		fmt.Fprintf(os.Stdout, "%s: %s\n", k, strings.Join(vv, ", "))
 	}
-	return c.roundTrip(method, rawURL, body)
+	const maxPreview = 2048
+	if len(body) == 0 {
+		fmt.Fprintf(os.Stdout, "Body: (empty)\n")
+	} else if len(body) > maxPreview {
+		fmt.Fprintf(os.Stdout, "Body (%d bytes, preview): %s\n", len(body), string(body[:maxPreview]))
+	} else {
+		fmt.Fprintf(os.Stdout, "Body: %s\n", string(body))
+	}
+	fmt.Fprintf(os.Stdout, "dry-run: request not sent\n")
+	return &Response{StatusCode: 0, Headers: make(http.Header), Body: nil}, nil
 }
 
 func (c *Client) applyRequestHeaders(req *http.Request, hasBody bool) {
@@ -293,7 +538,9 @@ func retryBackoffAfterAttempt(attempt int, retryAfterHeader string) time.Duratio
 	return time.Second * time.Duration(1<<uint(exp))
 }
 
-func (c *Client) roundTrip(method, rawURL string, body []byte) (*Response, error) {
+// roundTripRaw executes the request with retries and returns the raw *http.Response.
+// The caller is responsible for reading and closing the body.
+func (c *Client) roundTripRaw(method, rawURL string, body []byte) (*http.Response, error) {
 	maxAttempts := 1
 	if c.MaxRetries > 0 {
 		maxAttempts = 1 + c.MaxRetries
@@ -331,7 +578,7 @@ func (c *Client) roundTrip(method, rawURL string, body []byte) (*Response, error
 
 		shouldRetry := resp.StatusCode == 429 || resp.StatusCode >= 500
 		if !shouldRetry || attempt == maxAttempts-1 {
-			return c.readResponse(resp)
+			return resp, nil
 		}
 
 		io.Copy(io.Discard, resp.Body)
@@ -343,23 +590,23 @@ func (c *Client) roundTrip(method, rawURL string, body []byte) (*Response, error
 	return nil, fmt.Errorf("internal error: roundTrip exited without response")
 }
 
-func (c *Client) readResponse(resp *http.Response) (*Response, error) {
-	defer resp.Body.Close()
-
+func decompressReader(resp *http.Response) io.Reader {
 	var reader io.Reader = resp.Body
 	for _, encPart := range strings.Split(resp.Header.Get("Content-Encoding"), ",") {
-		encPart = strings.TrimSpace(strings.ToLower(encPart))
-		if encPart == "gzip" {
-			gz, err := gzip.NewReader(resp.Body)
-			if err != nil {
-				return nil, fmt.Errorf("gzip decompress: %w", err)
+		if strings.TrimSpace(strings.ToLower(encPart)) == "gzip" {
+			if gz, err := gzip.NewReader(resp.Body); err == nil {
+				return gz
 			}
-			defer gz.Close()
-			reader = gz
 			break
 		}
 	}
+	return reader
+}
 
+func (c *Client) bufferResponse(resp *http.Response) (*Response, error) {
+	defer resp.Body.Close()
+
+	reader := decompressReader(resp)
 	raw, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, fmt.Errorf("read response: %w", err)
@@ -371,3 +618,6 @@ func (c *Client) readResponse(resp *http.Response) (*Response, error) {
 		Body:       raw,
 	}, nil
 }
+
+// Ensure bufio is referenced so the import is valid in the generated file.
+var _ = bufio.Scanner{}

@@ -22,11 +22,12 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().String("format", "json", "Output format: json, pretty, yaml, jsonl, raw")
+	rootCmd.PersistentFlags().String("format", "json", "Output format: json, pretty, yaml, jsonl, table, csv, raw")
 	rootCmd.PersistentFlags().Bool("verbose", false, "Log HTTP request/response details to stderr")
 	rootCmd.PersistentFlags().String("transform", "", "GJSON expression to filter/transform JSON output")
 	rootCmd.PersistentFlags().String("profile", "", "Configuration profile name")
-	rootCmd.PersistentFlags().Int("page-limit", 0, "Max pages to fetch for paginated GET requests (0 = single page)")
+	rootCmd.PersistentFlags().Int("page-limit", 0, "Max pages to fetch (auto-detects Link, cursor, offset, page-number schemes)")
+	rootCmd.PersistentFlags().Bool("stream", false, "Stream response line-by-line (SSE / NDJSON)")
 	rootCmd.PersistentFlags().Bool("dry-run", false, "Print HTTP request without sending")
 	rootCmd.PersistentFlags().Int("max-retries", 0, "Max retry attempts for 429/5xx errors (0 = no retry)")
 	rootCmd.PersistentFlags().String("template", "", "Go template string for custom output formatting")

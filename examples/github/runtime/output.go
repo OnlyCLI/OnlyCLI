@@ -3,6 +3,7 @@
 package runtime
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/csv"
 	"encoding/json"
@@ -41,6 +42,10 @@ func formatOutputCell(v interface{}) string {
 func PrintOutput(cmd *cobra.Command, resp *Response) error {
 	if resp == nil {
 		return nil
+	}
+
+	if resp.StreamReader != nil {
+		return printStreamOutput(cmd, resp)
 	}
 
 	success := resp.StatusCode == 0 || (resp.StatusCode >= 200 && resp.StatusCode < 300)
@@ -216,4 +221,66 @@ func PrintOutput(cmd *cobra.Command, resp *Response) error {
 		_, err := fmt.Fprintln(out, buf.String())
 		return err
 	}
+}
+
+// printStreamOutput reads a streaming response line-by-line and prints each
+// chunk to stdout. Handles SSE (text/event-stream) and NDJSON formats.
+func printStreamOutput(cmd *cobra.Command, resp *Response) error {
+	defer resp.StreamReader.Close()
+
+	out := cmd.OutOrStdout()
+
+	format, _ := cmd.Flags().GetString("format")
+	format = strings.TrimSpace(format)
+	if format == "" {
+		format = "json"
+	}
+
+	contentType := resp.Headers.Get("Content-Type")
+	isSSE := strings.Contains(contentType, "text/event-stream")
+
+	scanner := bufio.NewScanner(resp.StreamReader)
+	buf := make([]byte, 0, 64*1024)
+	scanner.Buffer(buf, 1024*1024)
+
+	for scanner.Scan() {
+		line := scanner.Bytes()
+
+		if isSSE {
+			if bytes.HasPrefix(line, []byte("data: ")) {
+				line = bytes.TrimPrefix(line, []byte("data: "))
+				if string(line) == "[DONE]" {
+					break
+				}
+			} else {
+				continue
+			}
+		}
+
+		trimmed := bytes.TrimSpace(line)
+		if len(trimmed) == 0 {
+			continue
+		}
+
+		switch format {
+		case "raw":
+			fmt.Fprintln(out, string(trimmed))
+		case "pretty":
+			var pretty bytes.Buffer
+			if json.Indent(&pretty, trimmed, "", "  ") == nil {
+				fmt.Fprintln(out, pretty.String())
+			} else {
+				fmt.Fprintln(out, string(trimmed))
+			}
+		default:
+			var compact bytes.Buffer
+			if json.Compact(&compact, trimmed) == nil {
+				fmt.Fprintln(out, compact.String())
+			} else {
+				fmt.Fprintln(out, string(trimmed))
+			}
+		}
+	}
+
+	return scanner.Err()
 }

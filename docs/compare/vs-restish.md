@@ -32,7 +32,8 @@ OnlyCLI gives you a **dedicated executable** whose `--help` tree matches **one**
 | **Offline support** | **Full** for calling the API — spec already compiled in (network still needed for HTTP) | **Limited** if profiles or specs must be fetched remotely |
 | **Format support** | `json`, `pretty`, `yaml`, `jsonl`, `raw`, `table`, `csv` + `--template` | JSON-focused output modes; human-friendly defaults |
 | **Auth** | Bearer, Basic, API key from spec + env/config; **OAuth2** when defined (`auth login`) | Flexible auth plugins and profile auth |
-| **Pagination** | **Auto** for GET + `Link: ...; rel="next"` when `--page-limit` &gt; 0 | Pagination behavior depends on resource / plugin patterns |
+| **Pagination** | **Auto** — Link header, cursor, page-number, offset (auto-detected via `--page-limit`) | Pagination behavior depends on resource / plugin patterns |
+| **Streaming** | `--stream` for SSE and NDJSON | Not a built-in feature |
 | **Compression** | `Accept-Encoding: gzip, deflate`; gunzip responses | Typically supports compressed responses in modern builds |
 | **GJSON** | **`--transform`** ([gjson](https://github.com/tidwall/gjson)) on JSON before output | Often paired with external `jq`; different native story |
 | **Profiles** | **Multi-profile** config (`config set`, `config use-profile`, `--profile`) | Strong **profile** model for many services |
@@ -46,7 +47,7 @@ OnlyCLI gives you a **dedicated executable** whose `--help` tree matches **one**
 - You want a **named binary** for **your** API to hand to customers or internal teams.
 - You ship **versioned CLIs** next to **versioned OpenAPI** in CI (regenerate on spec change).
 - You need **predictable commands** for **automation and LLM agents** (stable `--help` / flags; optional agent-facing notes you maintain).
-- You value **table/CSV/jsonl**, **GJSON transforms**, **`@file` bodies**, **dry-run**, and **retries** in a **single-purpose** tool.
+- You value **table/CSV/jsonl**, **GJSON transforms**, **`@file` bodies**, **dry-run**, **retries**, and **streaming** (`--stream` for SSE and NDJSON) in a **single-purpose** tool.
 
 ### Example: generate and run against GitHub’s OpenAPI
 

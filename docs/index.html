@@ -144,7 +144,7 @@ description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 1,107 GitHub
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">pg</div>
       <h3>Auto-pagination</h3>
-      <p><code>--page-limit 10</code> -- follows <code>Link: rel="next"</code> headers. One call, complete results.</p>
+      <p><code>--page-limit 10</code> auto-detects Link header, cursor, offset, and page-number schemes. One flag, complete results.</p>
     </article>
     <article class="feature-card">
       <div class="feature-icon" aria-hidden="true">@</div>
@@ -255,7 +255,7 @@ description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 1,107 GitHub
           <td><span class="mark-no" aria-label="No">No</span></td>
         </tr>
         <tr>
-          <td>Auto-pagination</td>
+          <td>Auto-pagination (Link, cursor, offset)</td>
           <td><strong><span class="mark-yes" aria-label="Yes">Yes</span></strong></td>
           <td><span class="mark-no" aria-label="No">No</span></td>
           <td><span class="mark-no" aria-label="No">No</span></td>
@@ -281,6 +281,13 @@ description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 1,107 GitHub
           <td><span class="mark-yes" aria-label="Yes">Yes</span></td>
           <td><span class="mark-yes" aria-label="Yes">Yes</span></td>
           <td><span class="mark-no" aria-label="No">No</span></td>
+        </tr>
+        <tr>
+          <td>Streaming (SSE / NDJSON)</td>
+          <td><strong><span class="mark-yes" aria-label="Yes">Yes</span></strong></td>
+          <td>Manual</td>
+          <td><span class="mark-no" aria-label="No">No</span></td>
+          <td>Varies</td>
         </tr>
       </tbody>
     </table>

@@ -35,10 +35,10 @@ Stainless targets teams that want maintained SDKs plus a CLI in one pipeline. Co
 | **License** | MIT (open source) | Commercial platform / subscription |
 | **Dependencies** | Standalone generator; generated CLI is plain Go + modules | CLI generation is tied to the **Go SDK** target and Stainless config |
 | **Input** | Any **OpenAPI 3.x** (file or URL) | **Stainless configuration** + workflow (not "drop any spec" in isolation) |
-| **Output formats** | `json`, `pretty`, `yaml`, `table`, `csv`, `jsonl`, `raw` | `json`, `pretty`, `yaml`, `jsonl`, `raw`, plus **interactive explore** |
-| **GJSON transform** | Yes (`--transform`, [tidwall/gjson](https://github.com/tidwall/gjson) paths) | Yes (`--transform`, GJSON syntax) |
-| **Auto-pagination** | `Link: rel="next"` header following (`--page-limit`) | Multiple schemes (page number, cursor, cursor URL, offset) with **lazy loading** |
-| **Streaming** | Not yet supported | Yes — streaming endpoints handled similarly to auto-pagination |
+| **Output formats** | **Shared with Stainless:** `json`, `pretty`, `yaml`, `jsonl`, `raw`. **Only on OnlyCLI:** `table`, `csv`. | **Shared with OnlyCLI:** `json`, `pretty`, `yaml`, `jsonl`, `raw`. **Only on Stainless:** **interactive explore**. |
+| **GJSON transform** | Yes (`--transform`, GJSON syntax; [tidwall/gjson](https://github.com/tidwall/gjson)) | Yes (`--transform`, GJSON syntax) |
+| **Auto-pagination** | Multiple schemes with **automatic detection** from response headers and body: `Link` (`rel="next"`), cursor-based, cursor-URL, offset, and page-number pagination (`--page-limit`). | Multiple schemes (page number, cursor, cursor URL, offset) with **lazy loading**; **explicit scheme configuration** in Stainless config. |
+| **Streaming** | Yes — `--stream` for **SSE** (`text/event-stream`) and **NDJSON** responses | Yes — streaming endpoints handled similarly to auto-pagination |
 | **OAuth2** | When the spec defines OAuth2: `auth login` with device flow or client credentials (`--client-id`, optional `--client-secret`) | Supported via platform/SDK auth patterns |
 | **`@file` body input** | Yes: `--data @path.json`, `--data @-` for stdin | SDK/CLI patterns vary; not the same flag surface as OnlyCLI |
 | **Nested request args** | Yes: body fields map to dotted JSON paths (e.g. `metadata.labels`) | Nested flags / resource-oriented args (e.g. `--name.full-name`) |
@@ -55,14 +55,16 @@ Stainless targets teams that want maintained SDKs plus a CLI in one pipeline. Co
 
 ---
 
+**GJSON and output formats:** Both tools support the same **`--transform`** flag with **GJSON** syntax and the same core output formats (`json`, `pretty`, `yaml`, `jsonl`, `raw`). OnlyCLI adds **`table`** and **`csv`**; Stainless adds the **interactive explorer** (see the table above).
+
 ## Where Stainless leads
 
 Stainless's CLI generator has invested heavily in areas that matter for production SDK ecosystems:
 
-- **Pagination depth:** Stainless handles page-number, cursor, cursor-URL, and offset pagination schemes with lazy loading, avoiding overwhelming the backend. OnlyCLI currently supports only `Link: rel="next"` header following.
-- **Streaming:** Stainless supports streaming endpoints similarly to its pagination system. OnlyCLI does not yet handle streaming responses.
+- **SDK ecosystems:** Multi-language SDKs plus a CLI from one managed pipeline—not a CLI-only generator.
+- **Interactive TUI:** **Explore**-style interactive mode for browsing resources and operations.
 - **Man pages:** Stainless auto-generates man pages for each CLI tool and bundles them in Homebrew distributions. OnlyCLI can produce man pages via Cobra's doc generation, but this is not automated.
-- **GJSON and format parity:** Both tools now offer `--transform` with GJSON syntax and support `pretty` and `jsonl` output formats.
+- **Homebrew distribution:** Stainless automates release packaging including Homebrew with man pages; OnlyCLI typically uses GitHub releases, `install.sh`, or GoReleaser—Homebrew taps are up to you.
 
 ## Where OnlyCLI leads
 
@@ -78,6 +80,7 @@ Stainless's CLI generator has invested heavily in areas that matter for producti
 - You want **MIT-licensed** code and **no vendor lock-in**.
 - You already have (or only care about) **standard OpenAPI 3.x**—including public specs from GitHub, vendor bundles, or CI-generated documents.
 - You need a **dedicated binary** per API for **developers, CI/CD, or LLM agents** (stable `--help` and flags; optional `SKILL.md` you maintain).
+- You want **multi-scheme auto-pagination** with **runtime auto-detection** and **streaming** (`--stream` for SSE and NDJSON) **without** a commercial SDK platform.
 - You care about **CLI ergonomics**: `table`, `csv`, Go templates, **`@file` bodies**, and **dry-run** without adopting a full SDK platform.
 
 ---
@@ -86,8 +89,8 @@ Stainless's CLI generator has invested heavily in areas that matter for producti
 
 - You want **official SDKs** (Go, and other targets) **and** a CLI from one managed pipeline.
 - You prefer a **hosted / commercial** solution with Stainless handling updates, editions, and repository integration.
-- You need **advanced pagination** across multiple schemes (cursor, offset, page number) with lazy loading, or **streaming** endpoint support.
 - Your team values an **interactive explorer** (TUI-style) for browsing resources and operations, plus **auto-generated man pages** and **Homebrew** distribution.
+- You prefer **explicit pagination scheme configuration** in Stainless config over **runtime auto-detection** from API responses.
 - You are already standardizing on **Stainless config** rather than raw spec-only workflows.
 
 ---
@@ -143,7 +146,7 @@ After generation and build (per [Stainless CLI documentation](https://www.stainl
 petstore pets create --name.full-name doggie
 ```
 
-**Takeaway:** OnlyCLI optimizes for **direct OpenAPI -> your repo -> `go build`**. Stainless optimizes for **Stainless-managed SDK + CLI** with explorer, man pages, streaming, advanced pagination, and platform integration.
+**Takeaway:** OnlyCLI optimizes for **direct OpenAPI -> your repo -> `go build`**. Stainless optimizes for **Stainless-managed SDK + CLI** with explorer, man pages, and platform integration. Both support **auto-pagination** (multiple schemes) and **streaming**; OnlyCLI **auto-detects** pagination from responses, while Stainless relies on **configured** schemes and **lazy loading**.
 
 ---
 
@@ -158,7 +161,7 @@ petstore pets create --name.full-name doggie
 
 | If you need… | Lean toward |
 |--------------|-------------|
-| Open source, any OpenAPI 3.x, table/csv output, Go templates | **OnlyCLI** |
-| Multi-language SDKs + advanced pagination + streaming + man pages | **Stainless** |
+| Open source, any OpenAPI 3.x, table/csv output, Go templates, pagination **auto-detection** | **OnlyCLI** |
+| Multi-language SDKs, interactive explorer, auto-generated man pages, Homebrew distribution, explicit pagination config | **Stainless** |
 
-Both can produce professional CLIs; the decision is whether your center of gravity is **a standalone spec-driven binary you own** (OnlyCLI) or **a commercial SDK + CLI platform** (Stainless).
+Both can produce professional CLIs with **GJSON transforms**, **core output formats** (`json`, `pretty`, `yaml`, `jsonl`, `raw`), **auto-pagination**, and **streaming**. The decision is whether your center of gravity is **a standalone spec-driven binary you own** (OnlyCLI) or **a commercial SDK + CLI platform** (Stainless).
