@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/onlycli/onlycli)](https://goreportcard.com/report/github.com/onlycli/onlycli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**Turn any OpenAPI spec into a complete CLI. One command. One binary.**
+**Turn any OpenAPI spec into a complete CLI. One command. One binary. 35x fewer tokens than MCP.**
 
 <p align="center">
   <img src="docs/assets/images/hero-terminal.svg" alt="OnlyCLI terminal demo: generate a CLI from the GitHub API spec, then query repos, search, and list issues" width="720">
@@ -89,15 +89,17 @@ make generate-example
 
 Detailed write-ups: [vs Stainless](https://onlycli.github.io/OnlyCLI/compare/vs-stainless/) &middot; [vs Restish](https://onlycli.github.io/OnlyCLI/compare/vs-restish/) &middot; [vs curl/HTTPie](https://onlycli.github.io/OnlyCLI/blog/onlycli-vs-curl-httpie/)
 
-## For AI Agents
+## For AI Agents: 35x Cheaper Than MCP
 
-LLM agents call APIs. Most frameworks push full OpenAPI schemas into every prompt, burning tokens and adding latency. OnlyCLI takes the opposite approach:
+A GitHub MCP server loads **55,000 tokens** into every prompt. Three services consume **72% of your context window** on idle. At scale, that is **$51,000/month** in pure schema overhead.
+
+OnlyCLI takes the opposite approach:
 
 1. Generate a binary once from the spec
-2. Agent calls `./cli --help` to discover commands
+2. Agent calls `./cli --help` to discover commands (**~200 tokens**)
 3. Agent runs `./cli repos get --owner x --repo y` and reads stdout
 
-Stable command names, predictable flags, structured JSON output. No MCP server, no schema injection, no connection management.
+Stable command names, predictable flags, structured JSON output. No MCP server, no schema injection, no connection management. [See the full cost analysis](https://onlycli.github.io/OnlyCLI/token-cost/).
 
 ## Development
 
