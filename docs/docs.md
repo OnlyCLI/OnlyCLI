@@ -362,7 +362,7 @@ jobs:
 
 ### LLM agents
 
-Generated CLIs expose rich **`--help`** trees and stable flags—enough for agents to discover operations on demand. Many teams add a short **`SKILL.md`** (or similar) beside the binary summarizing top workflows; that file is **not** emitted by the current generator, so maintain it in your repo or docs pipeline if you want a single “agent onboarding” artifact.
+Generated CLIs expose rich **`--help`** trees and stable flags—enough for agents to discover operations on demand. Many teams add a short **`SKILL.md`** (or similar) beside the binary summarizing top workflows; that file is **not** emitted by the current generator, so maintain it in your repo or docs pipeline if you want a single “agent onboarding” artifact. For the economic case, see the <a href="{{ '/token-cost/' | relative_url }}">CLI vs MCP token-cost benchmark</a> and the deeper explainer on <a href="{{ '/blog/why-cli-beats-mcp-for-llm-agents/' | relative_url }}">why native CLI beats MCP for LLM agents</a>.
 
 ### Base URL overrides
 
@@ -398,7 +398,7 @@ Package the built binary or tarball from GitHub Releases. GoReleaser can publish
 
 ### What about MCP?
 
-OnlyCLI intentionally avoids MCP for calling your API: you ship a **binary** (plus optional agent notes such as `SKILL.md`) instead of a long-lived tool server. See the [blog]({{ '/blog/' | relative_url }}) for discussion.
+OnlyCLI intentionally avoids MCP for calling your API: you ship a **binary** (plus optional agent notes such as `SKILL.md`) instead of a long-lived tool server. See the <a href="{{ '/token-cost/' | relative_url }}">token-cost benchmark</a>, the explainer on <a href="{{ '/blog/why-cli-beats-mcp-for-llm-agents/' | relative_url }}">why native CLI beats MCP</a>, and the broader [blog]({{ '/blog/' | relative_url }}) for discussion.
 
 ### How is pagination detected?
 
@@ -414,5 +414,7 @@ Yes. Generated Go code targets **Linux, macOS, and Windows** (amd64/arm64). Use 
 
 - [OnlyCLI on GitHub](https://github.com/onlycli/onlycli)
 - [Getting started (blog)]({{ '/blog/getting-started-with-onlycli/' | relative_url }})
+- [CLI vs MCP token-cost benchmark]({{ '/token-cost/' | relative_url }})
+- [MCP token benchmark deep dive]({{ '/blog/mcp-token-cost-benchmark/' | relative_url }})
 - [OnlyCLI vs Stainless]({{ '/compare/vs-stainless/' | relative_url }})
 - [OnlyCLI vs Restish]({{ '/compare/vs-restish/' | relative_url }})

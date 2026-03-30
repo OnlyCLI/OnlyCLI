@@ -48,6 +48,7 @@ OnlyCLI gives you a **dedicated executable** whose `--help` tree matches **one**
 - You ship **versioned CLIs** next to **versioned OpenAPI** in CI (regenerate on spec change).
 - You need **predictable commands** for **automation and LLM agents** (stable `--help` / flags; optional agent-facing notes you maintain).
 - You value **table/CSV/jsonl**, **GJSON transforms**, **`@file` bodies**, **dry-run**, **retries**, and **streaming** (`--stream` for SSE and NDJSON) in a **single-purpose** tool.
+- You want the agent economics of a local binary; see the <a href="{{ '/token-cost/' | relative_url }}">CLI vs MCP token-cost benchmark</a> and <a href="{{ '/blog/why-cli-beats-mcp-for-llm-agents/' | relative_url }}">why native CLI beats MCP</a> for the deeper case.
 
 ### Example: generate and run against GitHub’s OpenAPI
 
@@ -116,4 +117,6 @@ These are **qualitative** expectations; measure on your own hardware and network
 ## Further reading
 
 - [OnlyCLI documentation]({{ '/docs/' | relative_url }}) — full install and generated CLI reference.
+- [CLI vs MCP token-cost benchmark]({{ '/token-cost/' | relative_url }}) — why binaries are lighter for agent workflows.
+- [OnlyCLI vs Stainless]({{ '/compare/vs-stainless/' | relative_url }}) — another comparison for API CLI buyers.
 - [Restish on GitHub](https://github.com/rest-sh/restish) — source, releases, and issue tracker.

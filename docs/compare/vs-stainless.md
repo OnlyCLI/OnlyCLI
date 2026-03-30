@@ -72,6 +72,7 @@ Stainless's CLI generator has invested heavily in areas that matter for producti
 - **Open source:** MIT license, no vendor lock-in, no subscription.
 - **Any-spec portability:** Point at any public or private OpenAPI 3.x URL and get a CLI. No platform account or configuration file required.
 - **Go template output:** `--template` with Go `text/template` for fully custom formatting.
+- **Lower agent overhead:** teams optimizing for AI workflows can pair this page with the <a href="{{ '/token-cost/' | relative_url }}">CLI vs MCP token-cost benchmark</a> and the explainer on <a href="{{ '/blog/why-cli-beats-mcp-for-llm-agents/' | relative_url }}">why native CLI beats MCP</a>.
 
 ---
 
@@ -153,6 +154,8 @@ petstore pets create --name.full-name doggie
 ## Further reading
 
 - [OnlyCLI documentation]({{ '/docs/' | relative_url }}) — installation, flags, and generated CLI behavior.
+- [CLI vs MCP token-cost benchmark]({{ '/token-cost/' | relative_url }}) — cost model for agent-focused workflows.
+- [OnlyCLI vs Restish]({{ '/compare/vs-restish/' | relative_url }}) — compare another CLI architecture.
 - [Stainless CLI docs](https://www.stainless.com/docs/cli/) — official Stainless CLI generator overview.
 
 ---
