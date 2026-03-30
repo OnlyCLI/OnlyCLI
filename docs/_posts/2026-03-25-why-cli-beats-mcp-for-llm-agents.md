@@ -25,7 +25,7 @@ Agents need three things from a tool:
 
 REST APIs already have a machine-readable contract: **OpenAPI**. The design question is how that contract crosses the boundary into the agent runtime. MCP exposes tools over a protocol; a CLI exposes tools as **subcommands and flags** with **structured stdout**.
 
-A separate but related pressure is **context size**. When the host injects large tool **schemas** into every completion request, you pay **tokens** whether or not the model invokes a tool. A thin **`SKILL.md`** plus on-demand **`--help`** lets the agent **pull** documentation when needed instead of **pushing** the entire surface area into the prompt up front. (Industry write-ups have measured steep overheads when many tools are registered; your mileage depends on host and model.)
+A separate but related pressure is **context size**. When the host injects large tool **schemas** into every completion request, you pay **tokens** whether or not the model invokes a tool. A thin **`SKILL.md`** plus on-demand **`--help`** lets the agent **pull** documentation when needed instead of **pushing** the entire surface area into the prompt up front. See the <a href="{{ '/token-cost/' | relative_url }}">CLI vs MCP token-cost benchmark</a> for the concrete numbers. (Industry write-ups have measured steep overheads when many tools are registered; your mileage depends on host and model.)
 
 ## How MCP Works
 
@@ -119,7 +119,7 @@ For **OpenAPI-backed REST**, a **generated native CLI** offers:
 - **Simpler** operational and mental models  
 - **Native** composability with the Unix-style ecosystem  
 
-MCP remains valuable for **rich, stateful tool servers**. But defaulting to MCP for every HTTP API inflates **tokens**, **latency**, and **failure modes** without improving the core request–response shape. **OnlyCLI** encodes the alternative: one spec, one binary, **direct** HTTP—plus a compact **`SKILL.md`** so agents learn the tool surface **once**, not on every turn.
+MCP remains valuable for **rich, stateful tool servers**. But defaulting to MCP for every HTTP API inflates **tokens**, **latency**, and **failure modes** without improving the core request–response shape. **OnlyCLI** encodes the alternative: one spec, one binary, **direct** HTTP—plus a compact **`SKILL.md`** so agents learn the tool surface **once**, not on every turn. If you want the product view, jump to the <a href="{{ '/docs/' | relative_url }}">full documentation</a> or compare this model with <a href="{{ '/compare/vs-restish/' | relative_url }}">runtime clients like Restish</a>.
 
 ### Practical adoption checklist
 

@@ -203,7 +203,7 @@ permalink: /token-cost/
 
 Each MCP tool definition costs **550--1,400 tokens**. When an agent connects to an MCP server, the host injects **every** tool's JSON Schema into the system prompt---whether the model uses zero tools or ten. There is no standard lazy-loading mechanism across providers.
 
-With a CLI, the "schema" is the `--help` text: ~80 tokens for one subcommand, read on demand. The agent pulls what it needs instead of carrying everything.
+With a CLI, the "schema" is the `--help` text: ~80 tokens for one subcommand, read on demand. The agent pulls what it needs instead of carrying everything. For the architecture behind that pull model, read <a href="{{ '/blog/why-cli-beats-mcp-for-llm-agents/' | relative_url }}">why native CLI beats MCP for LLM agent tool use</a>.
 
 | | MCP | CLI (OnlyCLI) |
 |---|---|---|
@@ -228,3 +228,11 @@ OnlyCLI goes further: instead of wrapping MCP at runtime, it generates a **nativ
 <div class="cost-cta">
   <a href="{{ '/docs/' | relative_url }}">Get started with OnlyCLI</a>
 </div>
+
+## Related reading
+
+- [Full OnlyCLI documentation]({{ '/docs/' | relative_url }})
+- [Why native CLI beats MCP for LLM agents]({{ '/blog/why-cli-beats-mcp-for-llm-agents/' | relative_url }})
+- [MCP token benchmark deep dive]({{ '/blog/mcp-token-cost-benchmark/' | relative_url }})
+- [OnlyCLI vs Stainless]({{ '/compare/vs-stainless/' | relative_url }})
+- [OnlyCLI vs Restish]({{ '/compare/vs-restish/' | relative_url }})

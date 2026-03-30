@@ -14,7 +14,7 @@ tags:
 
 Every time an LLM agent connects to an MCP server, the full tool catalog is injected into the context window. For a 93-tool GitHub MCP server, that is **55,000 tokens**---before the agent does anything. Connect three services (GitHub, Slack, Sentry) and you have burned **143,000 of your 200,000 token window**. Seventy-two percent gone. On idle.
 
-This post presents the numbers, explains why, and shows how OnlyCLI-generated CLIs bring that cost down by **96--99%**.
+This post presents the numbers, explains why, and shows how OnlyCLI-generated CLIs bring that cost down by **96--99%**. If you want the short landing-page version first, start with the <a href="{{ '/token-cost/' | relative_url }}">CLI vs MCP token-cost benchmark</a>.
 
 ## The numbers
 
@@ -143,4 +143,4 @@ Every endpoint in the GitHub REST API becomes a typed command with flags, help t
 
 ---
 
-*For a deeper technical comparison, see [Why Native CLI Beats MCP for LLM Agent Tool Use]({{ '/blog/why-cli-beats-mcp-for-llm-agents/' | relative_url }}). To get started, follow the [quick start guide]({{ '/blog/getting-started-with-onlycli/' | relative_url }}).*
+*For a deeper technical comparison, see [Why Native CLI Beats MCP for LLM Agent Tool Use]({{ '/blog/why-cli-beats-mcp-for-llm-agents/' | relative_url }}). To get started, follow the [quick start guide]({{ '/blog/getting-started-with-onlycli/' | relative_url }}), browse the [full documentation]({{ '/docs/' | relative_url }}), or compare the product against [Stainless]({{ '/compare/vs-stainless/' | relative_url }}) and [Restish]({{ '/compare/vs-restish/' | relative_url }}).*
