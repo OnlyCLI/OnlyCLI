@@ -1,7 +1,16 @@
 ---
 layout: default
-title: "OnlyCLI -- Turn any OpenAPI spec into a native CLI"
-description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 35x fewer tokens than MCP for AI agents. Auth, pagination, streaming, table/YAML/CSV, GJSON transforms -- all in a single binary."
+title: "OnlyCLI — Generate native CLIs from OpenAPI specs"
+description: "OnlyCLI generates native Go CLIs from OpenAPI 3.x specs with auth, pagination, streaming, structured output, and shell completion. Built for developers, CI, and AI agents."
+faq:
+  - question: "What is OnlyCLI?"
+    answer: "OnlyCLI is an OpenAPI CLI generator that turns an OpenAPI 3.x spec into a native Go command-line application with typed commands, flags, help text, and structured output."
+  - question: "How is OnlyCLI different from MCP?"
+    answer: "OnlyCLI generates a local binary that AI agents and developers can call directly, instead of depending on a long-lived MCP server that adds runtime complexity and prompt token overhead."
+  - question: "What does OnlyCLI generate from an OpenAPI spec?"
+    answer: "OnlyCLI maps API operations to CLI subcommands, parameters to flags, and includes auth, pagination, streaming, output formatting, retries, and shell completion in the generated project."
+  - question: "Who should use OnlyCLI?"
+    answer: "OnlyCLI is for teams that want a native CLI for internal or public APIs, especially developers, CI pipelines, and AI agent workflows that benefit from stable commands and structured stdout."
 ---
 
 <section class="hero home-hero" aria-labelledby="hero-heading">
@@ -99,6 +108,25 @@ description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 35x fewer to
     </div>
   </div>
   <p class="section-lead" style="margin-top: 2rem;">Every operation in your spec becomes a command. Every parameter becomes a flag. That's it.</p>
+</section>
+
+<section class="section" aria-labelledby="overview-heading">
+  <h2 id="overview-heading">What OnlyCLI is</h2>
+  <p class="section-lead">OnlyCLI is an OpenAPI CLI generator for teams that want a native command-line interface instead of hand-written wrappers, brittle curl scripts, or an always-on MCP server. It turns OpenAPI 3.x specs into Go binaries that developers, CI jobs, and AI agents can discover with <code>--help</code> and call directly.</p>
+  <div class="features-grid features-grid--three">
+    <article class="benefit-card">
+      <h3>For developers</h3>
+      <p>Generate a real CLI from an API spec with typed commands, shell completion, auth handling, and readable help text. Keep the generated project in git and ship one binary per API.</p>
+    </article>
+    <article class="benefit-card">
+      <h3>For CI and automation</h3>
+      <p>Use stable commands and structured stdout in pipelines, cron jobs, and scripts. No runtime service, no Node.js dependency, and no custom wrappers for every endpoint.</p>
+    </article>
+    <article class="benefit-card">
+      <h3>For AI agents</h3>
+      <p>Let agents inspect command trees on demand, execute a narrow operation, and read JSON, YAML, table, or CSV output without reloading a giant tool schema into every prompt.</p>
+    </article>
+  </div>
 </section>
 
 <section class="section section-why" aria-labelledby="why-heading">
@@ -315,6 +343,34 @@ description: "Generate a complete Go CLI from any OpenAPI 3.x spec. 35x fewer to
 <span class="c"># Agent reads structured JSON from stdout</span>
 <span class="out">{"id":23096959,"name":"go","full_name":"golang/go",...}</span></pre>
   <p class="section-lead">Stable names. Predictable flags. Structured output. The agent learns the surface once, not on every turn.</p>
+</section>
+
+<section class="section" aria-labelledby="faq-heading">
+  <h2 id="faq-heading">OnlyCLI FAQ</h2>
+  <p class="section-lead">Short answers for search engines, AI tools, and developers evaluating whether OnlyCLI fits their API workflow.</p>
+  <div class="features-grid features-grid--two">
+    <article class="benefit-card">
+      <h3>What is OnlyCLI?</h3>
+      <p>OnlyCLI converts an OpenAPI 3.x document into a native Go CLI with subcommands for operations, flags for parameters, generated help text, and structured output for scripts and agents.</p>
+    </article>
+    <article class="benefit-card">
+      <h3>How is it different from MCP?</h3>
+      <p>OnlyCLI gives you a local binary that can be versioned, cached, and called directly. That removes the runtime server layer and avoids injecting large MCP tool manifests into every model prompt.</p>
+    </article>
+    <article class="benefit-card">
+      <h3>What features come built in?</h3>
+      <p>Generated CLIs can include auth, auto-pagination, streaming, retries, dry-run support, shell completion, JSON/YAML/table/CSV output, and GJSON or template-based result shaping.</p>
+    </article>
+    <article class="benefit-card">
+      <h3>Who is it for?</h3>
+      <p>OnlyCLI works well for platform teams, internal APIs, public developer tools, CI automation, and AI agents that need stable commands with predictable flags and machine-readable stdout.</p>
+    </article>
+  </div>
+  <div class="link-list faq-links">
+    <a href="{{ '/docs/' | relative_url }}">Read the full documentation</a>
+    <a href="{{ '/token-cost/' | relative_url }}">See the token-cost benchmark</a>
+    <a href="{{ '/compare/vs-stainless/' | relative_url }}">Compare OnlyCLI vs Stainless</a>
+  </div>
 </section>
 
 <section class="section section-opensource" aria-labelledby="oss-heading">

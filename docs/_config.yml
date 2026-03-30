@@ -1,7 +1,11 @@
 title: OnlyCLI
-description: "Turn any OpenAPI spec into a native CLI. 35x fewer tokens than MCP. Zero runtime. Zero bloat."
+description: "Generate native Go CLIs from OpenAPI 3.x specs with auth, pagination, streaming, structured output, and 35x fewer tokens than MCP for AI agents."
 url: "https://onlycli.github.io"
 baseurl: "/OnlyCLI"
+lang: en_US
+tagline: "OpenAPI to native CLI generator"
+logo: "https://onlycli.github.io/OnlyCLI/assets/images/hero-terminal.svg"
+image: "https://onlycli.github.io/OnlyCLI/assets/images/hero-terminal.svg"
 markdown: kramdown
 highlighter: rouge
 permalink: /blog/:title/
@@ -26,5 +30,8 @@ social:
   name: OnlyCLI
   links:
     - https://github.com/onlycli/onlycli
+    - https://onlycli.github.io/OnlyCLI/
+github_username: onlycli
+repository: onlycli/onlycli
 author: OnlyCLI Team
 google_analytics: G-FHB5NHHZDB
