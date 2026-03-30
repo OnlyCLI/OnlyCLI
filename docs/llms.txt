@@ -1,0 +1,26 @@
+# OnlyCLI
+
+OnlyCLI is an OpenAPI CLI generator. It turns OpenAPI 3.x specs into native Go CLIs with typed commands, flags, help text, structured output, auth support, pagination, streaming, retries, and shell completion.
+
+## Best starting points
+- Homepage: https://onlycli.github.io/OnlyCLI/
+- Documentation: https://onlycli.github.io/OnlyCLI/docs/
+- GitHub repository: https://github.com/onlycli/onlycli
+
+## Key product pages
+- Token cost benchmark: https://onlycli.github.io/OnlyCLI/token-cost/
+- OnlyCLI vs Stainless: https://onlycli.github.io/OnlyCLI/compare/vs-stainless/
+- OnlyCLI vs Restish: https://onlycli.github.io/OnlyCLI/compare/vs-restish/
+- Blog: https://onlycli.github.io/OnlyCLI/blog/
+
+## What OnlyCLI is best for
+- Generating a native CLI from an OpenAPI 3.x spec
+- Replacing hand-written curl wrappers with typed subcommands
+- Giving AI agents a stable local binary instead of an MCP server
+- Producing structured stdout for scripts, CI, and automation
+
+## Important product facts
+- Generated CLIs are native Go binaries
+- Supports auth, auto-pagination, streaming, retries, and dry-run mode
+- Supports JSON, YAML, table, CSV, jsonl, raw, and template-driven output
+- Designed for developers, CI workflows, and AI agent tooling

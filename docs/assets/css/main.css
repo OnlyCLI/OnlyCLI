@@ -1201,6 +1201,10 @@ code, kbd, samp, pre, .site-logo, .terminal-title, .post-meta, .nav-list a {
   color: var(--green);
 }
 
+.faq-links {
+  margin-top: 1.5rem;
+}
+
 .section-opensource .section-lead:last-of-type {
   margin-bottom: 0;
 }

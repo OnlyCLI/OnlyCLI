@@ -2,7 +2,91 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0d1117">
 
+{% assign page_url = page.url | default: '/' %}
+{% assign absolute_page_url = page_url | absolute_url %}
+{% assign page_description = page.description | default: site.description %}
+{% assign social_image = page.image | default: site.image %}
+
 {% seo %}
+
+{% if page_url == '/' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "{{ '/' | absolute_url }}#organization",
+      "name": "{{ site.title | escape }}",
+      "url": "{{ '/' | absolute_url }}",
+      "logo": "{{ site.logo | absolute_url }}",
+      "sameAs": [
+        "https://github.com/onlycli/onlycli"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "{{ '/' | absolute_url }}#website",
+      "url": "{{ '/' | absolute_url }}",
+      "name": "{{ site.title | escape }}",
+      "description": {{ site.description | jsonify }},
+      "publisher": {
+        "@id": "{{ '/' | absolute_url }}#organization"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "{{ '/' | absolute_url }}#software",
+      "name": "{{ site.title | escape }}",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "CLI Generator",
+      "operatingSystem": "Linux, macOS, Windows",
+      "url": "{{ '/' | absolute_url }}",
+      "downloadUrl": "https://github.com/onlycli/onlycli",
+      "codeRepository": "https://github.com/onlycli/onlycli",
+      "license": "https://github.com/onlycli/onlycli/blob/main/LICENSE",
+      "description": {{ site.description | jsonify }},
+      "creator": {
+        "@id": "{{ '/' | absolute_url }}#organization"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Generate native Go CLIs from OpenAPI 3.x specs",
+        "Map operations to typed commands and flags",
+        "Built-in auth, pagination, and streaming support",
+        "Structured output with JSON, YAML, table, CSV, and transforms",
+        "Works well with AI agents through local binaries"
+      ]
+    }
+  ]
+}
+</script>
+{% endif %}
+
+{% if page.faq %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% for item in page.faq %}
+    {
+      "@type": "Question",
+      "name": {{ item.question | jsonify }},
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": {{ item.answer | jsonify }}
+      }
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

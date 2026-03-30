@@ -1,6 +1,35 @@
 ---
 layout: default
 ---
+{% assign post_url = page.url | absolute_url %}
+{% assign post_description = page.description | default: page.excerpt | strip_html | strip_newlines %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ page.title | jsonify }},
+  "description": {{ post_description | jsonify }},
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "dateModified": "{{ page.last_modified_at | default: page.date | date_to_xmlschema }}",
+  "author": {
+    "@type": "Person",
+    "name": {{ page.author | default: site.author | jsonify }}
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": {{ site.title | jsonify }},
+    "logo": {
+      "@type": "ImageObject",
+      "url": {{ site.logo | absolute_url | jsonify }}
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": {{ post_url | jsonify }}
+  },
+  "url": {{ post_url | jsonify }}
+}
+</script>
 <article class="post-single" itemscope itemtype="https://schema.org/BlogPosting">
   <header class="post-header">
     <h1 class="post-title" itemprop="headline">{{ page.title | escape }}</h1>

@@ -4,4 +4,6 @@ layout: null
 User-agent: *
 Allow: /
 
+# Machine-readable site summary for LLMs and agents:
+# {{ site.url }}{{ site.baseurl }}/llms.txt
 Sitemap: {{ site.url }}{{ site.baseurl }}/sitemap.xml
